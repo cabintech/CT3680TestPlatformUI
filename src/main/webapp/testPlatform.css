@@ -1,0 +1,126 @@
+/* 1. GLOBAL SETUP for Vertical Centering (Unchanged) */
+html, body {
+    height: 100vh;
+    margin: 0; 
+    padding: 0;
+    /* Centers the entire page content (the main block) */
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+body {
+    background-color: grey;
+}
+
+/* 2. MAIN: Needs no alignment rules; it just holds the centered children */
+main {
+	display: block;
+}
+
+/* 2. H2 Centering (Centered Block) */
+h2 {
+    /* Auto-adjust width to the text length */
+    width: fit-content; 
+    /* Center the block horizontally */
+    margin: 0 auto 20px auto; 
+    /* Force text to align center within the H2 block */
+    text-align: center;
+}
+
+/* 3. ALIGNMENT WRAPPER: Centers the group of button/list */
+#alignmentWrapper {
+    /* Increased estimated width for a safer fit */
+    width: 425px; 
+    /* Center the block horizontally */
+    margin: 0 auto; 
+    /* Align contents left *inside* this centered block */
+    text-align: left; 
+}
+
+/* 4. BUTTON STYLES (Enlarged and Aligned) */
+#btnStart {
+	background-color: green;
+    font-size: 30px; 
+    padding: 20px 60px; 
+    display: block; /* Use block to occupy the full width of the wrapper (350px) */
+    /* If you want the button to be only as wide as its text, use 'inline-block' instead: */
+    /* display: inline-block; */ 
+    margin-bottom: 20px;
+}
+
+/* 5. CHECKBOX LIST STYLE */
+#cbList {
+	/* No special alignment needed; it inherits text-align: left from #alignmentWrapper */
+	padding: 0;
+    margin: 0;
+}
+
+/* 8. OTHER BUTTON STYLES (Enlarged) */
+#backToStart {
+	background-color: rgb(255,85,85); 
+    font-size: 20px; 
+    padding: 10px 30px; 
+}
+
+#proceedWithTesting {
+	background-color: green; 
+    font-size: 20px; 
+    padding: 10px 30px; 
+}
+
+#btnCancel {
+	background-color: rgb(255,85,85); 
+    font-size: 20px; 
+    padding: 10px 30px; 
+    margin-top: 20px;
+}
+
+#status {
+	background-color: green; 
+    /* Increased Font Size for Label */
+    font-size: 28px; 
+    /* Increased Size/Padding for the Result Box */
+    padding: 15px 30px;
+    /* ADDED: Space below the status label */
+    margin-bottom: 20px;
+    /* Ensures it acts as a centerable block element */
+    display: inline-block;
+}
+
+button {
+	text-align: center;
+}
+
+#nextBtn {
+	background-color: blue;
+    /* Increased Font Size */
+    font-size: 24px; 
+    /* Increased Button Size */
+    padding: 15px 40px; 
+    /* Ensures the button is centered on the page */
+    display: block;
+    width: fit-content;
+    margin: 10px auto; /* 10px vertical margin, auto horizontal centering */
+}
+
+.hiddenTab {
+	display: none;
+}
+
+#progress {
+	font-size: 24px;
+}
+
+#progressPage {
+	text-align: center;
+}
+
+#statusLbl {
+	font-size: 28px;
+	margin-right: 25px;
+}
+
+label {
+	font-size: 20px;
+}

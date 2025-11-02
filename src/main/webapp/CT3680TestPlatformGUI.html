@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>CT3680 Test</title>
+    <link rel="stylesheet" type="text/css" href="testPlatform.css"/>
+</head>
+<body>
+	<main>
+		<div id="startPage" class="currentTab">
+			<h2>Insert the next module, then click the button below:</h2><br>
+			<div id="alignmentWrapper">
+				<button id="btnStart">Start<br>Testing Procedure</button><br>
+				<span id="cbList">
+					<span class="checkSpan">
+						<input type="checkbox" id="cbAddToStock" name="cbAddToStock" class="cb">
+			        	<label for="cbAddToStock">Add to stock management system if all tests pass</label>
+			        </span><br>
+			        <span class="checkSpan">
+						<input type="checkbox" id="cbInitNewMod" name="cbInitNewMod" class="cb">
+			        	<label for="cbInitNewMod">Initialize new module</label>
+			        </span><br>
+			        <span class="checkSpan">
+						<input type="checkbox" id="cbUpdateResults" name="cbUpdateResults" class="cb">
+			        	<label for="cbUpdateResults">Update test results</label>
+			        </span>
+				</span><br>
+			</div>
+		</div>
+		<div id="confirmRetestPage" class="hiddenTab">
+			<h2>Module already exists in database. Do you wish to re-test?</h2><br>
+			<span>
+				<button id="backToStart">No, back to<br>Start screen</button>
+				<button id="proceedWithTesting">Proceed with<br>Testing</button>
+			</span>
+		</div>
+		<div id="progressPage" class="hiddenTab">
+			<h2>Testing in progress, please wait....</h2><br>
+			<canvas id="canvas"></canvas><br/>
+			<div id="progress">Example text</div>
+			<button id="btnCancel">Cancel</button>
+		</div>
+		<div id="resultsPage" class="hiddenTab">
+			<h2>Testing Complete</h2><br>
+			<span>
+				<span id="statusLbl"><b>Status:</b></span>
+				<button id="status">Pass</button>
+			</span><br>
+			<button id="nextBtn">Next</button>
+		</div>
+	</main>
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+  crossorigin="anonymous">
+</script>
+<script>
+	var canvas= document.getElementById("canvas");
+	var ctx= canvas.getContext("2d");
+	const centerX = canvas.width / 2;
+	const centerY = canvas.height / 2;
+
+	function drawCircle() {
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		var radius = 51;
+		var startAngle = 0;
+		var endAngle = Math.PI * 2;
+	    ctx.beginPath();
+	    ctx.lineCap="square";
+	    ctx.strokeStyle="black";
+	    ctx.arc(centerX, centerY, radius, startAngle, endAngle, true);
+	    ctx.stroke();
+	}
+
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	async function drawProgress() {
+		var radius = 50;
+		var startAngle = 0 - (Math.PI / 2);
+	    ctx.beginPath();
+	    ctx.lineCap="square";
+	    ctx.strokeStyle="black";
+		for (let i=0; i<=100; i++) {
+			var endAngle = (Math.PI * 2)*(i/100) - (Math.PI / 2);
+			ctx.moveTo(centerX, centerY);
+			ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
+			ctx.closePath();
+			ctx.fillStyle = 'blue';
+			ctx.fill();
+			$("#progress").text(i + "%");
+			await sleep(50);
+		}
+		$(".currentTab").toggleClass("hiddenTab");
+		$(".currentTab").toggleClass("currentTab");
+		$("#resultsPage").toggleClass("hiddenTab");
+		$("#resultsPage").toggleClass("currentTab");
+	}
+	
+	$("#btnStart").click(function(){
+		$(".currentTab").toggleClass("hiddenTab");
+		$(".currentTab").toggleClass("currentTab");
+		$("#progressPage").toggleClass("hiddenTab");
+		$("#progressPage").toggleClass("currentTab");
+		
+	    drawCircle();
+		drawProgress();
+		
+		$.ajax({
+			url: "TestCom",
+			type: "GET",
+			contentType: "text",
+			success: function(result) {
+			},
+			error: function(xhr) {
+				alert("Error: HTTP status " + xhr.status);
+			}
+		});
+    });
+	
+	$("#nextBtn").click(function(){
+		$(".currentTab").toggleClass("hiddenTab");
+		$(".currentTab").toggleClass("currentTab");
+		$("#startPage").toggleClass("hiddenTab");
+		$("#startPage").toggleClass("currentTab");
+	});
+</script>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>CT3680 Test</title>
+    <link rel="stylesheet" type="text/css" href="testPlatform.css"/>
+</head>
+<body style="background-color: grey;">
+	<main style="text-align: center;">
+		<h2>Testing in progress, please wait....</h2><br>
+		<canvas id="canvas"></canvas><br/>
+		<div id="progress">Example text</div>
+		<button style="background-color: rgb(255,85,85); text-align: center;">Cancel</button>
+	</main>
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+  crossorigin="anonymous"></script>
+<!-- >script src="testPlatform.js"></script-->
+<script>
+var canvas= document.getElementById("canvas");
+var ctx= canvas.getContext("2d");
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+
+function drawCircle() {
+	var radius = 51;
+	var startAngle = 0;
+	var endAngle = Math.PI * 2;
+    ctx.beginPath();
+    ctx.lineCap="square";
+    ctx.strokeStyle="black";
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle, true);
+    ctx.stroke();
+}
+
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function drawProgress() {
+	var radius = 50;
+	var startAngle = 0 - (Math.PI / 2);
+    ctx.beginPath();
+    ctx.lineCap="square";
+    ctx.strokeStyle="black";
+	for (let i=0; i<=100; i++) {
+		var endAngle = (Math.PI * 2)*(i/100) - (Math.PI / 2);
+		ctx.moveTo(centerX, centerY);
+		ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
+		ctx.closePath();
+		ctx.fillStyle = 'blue';
+		ctx.fill();
+		$("#progress").text(i + "%");
+		await sleep(50);
+	}
+}
+
+$(function() {
+    drawCircle();
+	drawProgress();
+})
+</script>
+</html>

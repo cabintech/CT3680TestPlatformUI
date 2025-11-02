@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>CT3680 Test</title>
+    <link rel="stylesheet" type="text/css" href="testPlatform.css"/>
+</head>
+<body style="background-color: grey;">
+	<main style="text-align: center;">
+		<h2>Insert the next module, then click the button below:</h2><br>
+		<button id="start" style="background-color: green; text-align: center;">Start<br>Testing Procedure</button><br>
+		<span style="text-align: left;">
+			<span class="checkSpan">
+				<input type="checkbox" id="cbAddToStock" name="cbAddToStock" class="cb">
+	        	<label for="cbAddToStock">Add to stock management system if all tests pass</label>
+	        </span><br>
+	        <span class="checkSpan">
+				<input type="checkbox" id="cbInitNewMod" name="cbInitNewMod" class="cb">
+	        	<label for="cbInitNewMod">Initialize new module</label>
+	        </span><br>
+	        <span class="checkSpan">
+				<input type="checkbox" id="cbUpdateResults" name="cbUpdateResults" class="cb">
+	        	<label for="cbUpdateResults">Update test results</label>
+	        </span>
+		</span><br>
+        <button style="background-color: blue; text-align: center;">Exit</button>
+	</main>
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+  crossorigin="anonymous"></script>
+<script>
+	$("#start").click(function(){
+		$.ajax({
+			url: "TestCom",
+			type: "GET",
+			contentType: "text",
+			success: function(result) {
+				alert("Yay!");
+			},
+			error: function(xhr) {
+				alert("Error: HTTP status " + xhr.status);
+			}
+		});
+    });
+</script>
+</html>
