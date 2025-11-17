@@ -1,4 +1,4 @@
-/* 1. GLOBAL SETUP for Vertical Centering (Unchanged) */
+/* GLOBAL SETUP for Vertical Centering*/
 html, body {
     height: 100vh;
     margin: 0; 
@@ -13,12 +13,12 @@ body {
     background-color: grey;
 }
 
-/* 2. MAIN: Needs no alignment rules; it just holds the centered children */
+/* MAIN: Needs no alignment rules; it just holds the centered children */
 main {
 	display: block;
 }
 
-/* 2. H2 Centering (Centered Block) */
+/* H2 Centering (Centered Block) */
 h2 {
     /* Auto-adjust width to the text length */
     width: fit-content; 
@@ -28,7 +28,7 @@ h2 {
     text-align: center;
 }
 
-/* 3. ALIGNMENT WRAPPER: Centers the group of button/list */
+/* ALIGNMENT WRAPPER: Centers the group of button/list */
 #alignmentWrapper {
     /* Increased estimated width for a safer fit */
     width: 425px; 
@@ -38,25 +38,22 @@ h2 {
     text-align: left; 
 }
 
-/* 4. BUTTON STYLES (Enlarged and Aligned) */
+/* BUTTON STYLES (Enlarged and Aligned) */
 #btnStart {
 	background-color: green;
     font-size: 30px; 
     padding: 20px 60px; 
-    display: block; /* Use block to occupy the full width of the wrapper (350px) */
-    /* If you want the button to be only as wide as its text, use 'inline-block' instead: */
-    /* display: inline-block; */ 
+    display: block; /* Use block to occupy the full width of the wrapper */
     margin-bottom: 20px;
 }
 
-/* 5. CHECKBOX LIST STYLE */
+/* CHECKBOX LIST STYLE */
 #cbList {
 	/* No special alignment needed; it inherits text-align: left from #alignmentWrapper */
 	padding: 0;
     margin: 0;
 }
 
-/* 8. OTHER BUTTON STYLES (Enlarged) */
 #backToStart {
 	background-color: rgb(255,85,85); 
     font-size: 20px; 

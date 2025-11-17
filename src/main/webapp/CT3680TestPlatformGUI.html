@@ -57,13 +57,17 @@
   crossorigin="anonymous">
 </script>
 <script>
+	//set up canvas for progress indicator
 	var canvas= document.getElementById("canvas");
 	var ctx= canvas.getContext("2d");
 	const centerX = canvas.width / 2;
 	const centerY = canvas.height / 2;
 
+	//draw the outline
 	function drawCircle() {
+		//clear the canvas
 		ctx.clearRect(0,0,canvas.width,canvas.height);
+		
 		var radius = 51;
 		var startAngle = 0;
 		var endAngle = Math.PI * 2;
@@ -74,10 +78,14 @@
 	    ctx.stroke();
 	}
 
+	//wait for a specified time in miliseconds
 	function sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
+	//fill the circle to indicate progress status
+	//will be updated to take an argument indicating percent complete
+	//currently hardcoded to update every 50 ms until reaching 100% progress after 5 seconds
 	async function drawProgress() {
 		var radius = 50;
 		var startAngle = 0 - (Math.PI / 2);
@@ -85,35 +93,62 @@
 	    ctx.lineCap="square";
 	    ctx.strokeStyle="black";
 		for (let i=0; i<=100; i++) {
+			//calculate angle based on percent complete (0-100)
 			var endAngle = (Math.PI * 2)*(i/100) - (Math.PI / 2);
+			
+			//draw and fill the arc
 			ctx.moveTo(centerX, centerY);
 			ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
 			ctx.closePath();
 			ctx.fillStyle = 'blue';
 			ctx.fill();
+			
+			//update the label to display % complete
 			$("#progress").text(i + "%");
+			//wait 50 ms
 			await sleep(50);
 		}
+		
+		//hide this div and make the results div visble
 		$(".currentTab").toggleClass("hiddenTab");
 		$(".currentTab").toggleClass("currentTab");
 		$("#resultsPage").toggleClass("hiddenTab");
 		$("#resultsPage").toggleClass("currentTab");
 	}
 	
+	//define click function for Start button
 	$("#btnStart").click(function(){
+		//currently hardcoded to ignore the confirmRetest page, will add this to the screenflow later
+		
+		//hide this div and make the progress div visble
 		$(".currentTab").toggleClass("hiddenTab");
 		$(".currentTab").toggleClass("currentTab");
 		$("#progressPage").toggleClass("hiddenTab");
 		$("#progressPage").toggleClass("currentTab");
 		
+		//draw the outline for the progress indicator
 	    drawCircle();
+		//fill in the progress indicator (currently hardcoded)
 		drawProgress();
 		
+		//make a call to TestCom servlet
+//		$.ajax({
+//			url: "TestCom",
+//			type: "GET",
+//			contentType: "text",
+//			success: function(result) {
+//				//no need to do anything, this is just to test communication between the PC and uC, will be replaced later
+//			},
+//			error: function(xhr) {
+//				alert("Error: HTTP status " + xhr.status);
+//			}
+//		});
 		$.ajax({
-			url: "TestCom",
+			url: "TestDiagnostics",
 			type: "GET",
 			contentType: "text",
 			success: function(result) {
+				//no need to do anything, this is just to test communication between the PC and uC, will be replaced later
 			},
 			error: function(xhr) {
 				alert("Error: HTTP status " + xhr.status);
@@ -121,7 +156,9 @@
 		});
     });
 	
+	//define click function for Next button
 	$("#nextBtn").click(function(){
+		//hide this div and make the start div visble
 		$(".currentTab").toggleClass("hiddenTab");
 		$(".currentTab").toggleClass("currentTab");
 		$("#startPage").toggleClass("hiddenTab");

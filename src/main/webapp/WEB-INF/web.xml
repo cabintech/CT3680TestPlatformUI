@@ -19,4 +19,14 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  <servlet>
+    <description></description>
+    <display-name>TestDiagnostics</display-name>
+    <servlet-name>TestDiagnostics</servlet-name>
+    <servlet-class>com.cabintechglobal.testplatform.TestDiagnostics</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TestDiagnostics</servlet-name>
+    <url-pattern>/TestDiagnostics</url-pattern>
+  </servlet-mapping>
 </web-app>
