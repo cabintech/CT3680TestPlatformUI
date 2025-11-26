@@ -8,161 +8,84 @@
 </head>
 <body>
 	<main>
-		<div id="startPage" class="currentTab">
-			<h2>Insert the next module, then click the button below:</h2><br>
-			<div id="alignmentWrapper">
-				<button id="btnStart">Start<br>Testing Procedure</button><br>
-				<span id="cbList">
-					<span class="checkSpan">
-						<input type="checkbox" id="cbAddToStock" name="cbAddToStock" class="cb">
-			        	<label for="cbAddToStock">Add to stock management system if all tests pass</label>
-			        </span><br>
-			        <span class="checkSpan">
-						<input type="checkbox" id="cbInitNewMod" name="cbInitNewMod" class="cb">
-			        	<label for="cbInitNewMod">Initialize new module</label>
-			        </span><br>
-			        <span class="checkSpan">
-						<input type="checkbox" id="cbUpdateResults" name="cbUpdateResults" class="cb">
-			        	<label for="cbUpdateResults">Update test results</label>
-			        </span>
-				</span><br>
+		<div id="autoTest">
+			<table style="border: none;">
+				<colgroup>
+					<col style="width: 50%">
+					<col style="width: 50%">
+				</colgroup>
+				<tr>
+					<td style="text-align: center;">
+						<div id="startPage">
+							<h2>Insert the next module, then click the button below:</h2><br>
+							<div id="alignmentWrapper">
+								<button id="btnStart">Start<br>Testing Procedure</button><br>
+								<span id="cbList">
+									<span class="checkSpan">
+										<input type="checkbox" id="cbAddToStock" name="cbAddToStock" class="cb">
+							        	<label for="cbAddToStock">Add to stock management system if all tests pass</label>
+							        </span><br>
+							        <span class="checkSpan">
+										<input type="checkbox" id="cbInitNewMod" name="cbInitNewMod" class="cb">
+							        	<label for="cbInitNewMod">Initialize new module</label>
+							        </span><br>
+							        <span class="checkSpan">
+										<input type="checkbox" id="cbUpdateResults" name="cbUpdateResults" class="cb">
+							        	<label for="cbUpdateResults">Update test results</label>
+							        </span>
+								</span><br><br>
+								<label id=btnManualTest>Click here for manual testing</label><br>
+								<button id="testDB">Test DB</button>
+								<button id="testReg">Test Registration</button>
+							</div>
+						</div>
+					</td>
+					<td style="text-align: center; background-color: rgb(100,100,100)">
+						<div id="progressPage" class="hiddenTab">
+							<h2 id="progressTitle"></h2><br>
+							<canvas id="canvas"></canvas><br/>
+							<div id="progress">0%</div>
+							<div id="msg"></div>
+							<button id="btnCancel">Cancel</button>
+							<button id="btnConfirmRetest" style="display: none;">Retest this module</button>
+						</div>
+						<div id="waitForStart" style="font-style: italic;">
+							<h3>Waiting to start...</h3>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<div id="confirmRetestPage" class="hiddenTab">
+				<h2>Module already exists in database.</h2><br>
+				<span>
+					<button id="proceedWithTesting">Proceed with<br>Testing</button>
+				</span>
 			</div>
+
 		</div>
-		<div id="confirmRetestPage" class="hiddenTab">
-			<h2>Module already exists in database. Do you wish to re-test?</h2><br>
-			<span>
-				<button id="backToStart">No, back to<br>Start screen</button>
-				<button id="proceedWithTesting">Proceed with<br>Testing</button>
-			</span>
-		</div>
-		<div id="progressPage" class="hiddenTab">
-			<h2>Testing in progress, please wait....</h2><br>
-			<canvas id="canvas"></canvas><br/>
-			<div id="progress">Example text</div>
-			<button id="btnCancel">Cancel</button>
-		</div>
-		<div id="resultsPage" class="hiddenTab">
-			<h2>Testing Complete</h2><br>
-			<span>
-				<span id="statusLbl"><b>Status:</b></span>
-				<button id="status">Pass</button>
-			</span><br>
-			<button id="nextBtn">Next</button>
+		<div id="manualTest" class="hiddenTab">
+			<h2>Click on one of the buttons below to run the desired test:</h2>
+			<button id="btnPowerOn" class="manualTestBtn" style="margin-right: 20px; margin-left: 240px; color:black; background-color:green;">Power On</button>
+			<button id="btnPowerOff" class="manualTestBtn" style="background-color: rgb(255,85,85); color:black;">Power Off</button><br><br>
+			<button id="btnReadSN" class="manualTestBtn" style="margin-right: 100px;">Read Serial Number</button>
+			<button id="btnVerifyDiagStream" class="manualTestBtn" style="margin-right: 100px;">Verify Diagnostic Stream</button>
+			<button id="btnVerifyCVInputs" class="manualTestBtn">Verify CV Inputs</button><br>
+			<button id="btnLoadFirmware" class="manualTestBtn" style="margin-right: 100px;">Load Firmware</button>
+			<button id="btnVerifyOpt" class="manualTestBtn" style="margin-right: 100px;">Verify Option Switches</button>
+			<button id="btnVerifyPGM" class="manualTestBtn">Verify Program Selection</button><br>
+			<button id="btnUpdateResultsTbl" class="manualTestBtn" style="margin-right: 100px;">Update Results Table</button>
+			<button id="btnVerifySamplingRates" class="manualTestBtn" style="margin-right: 100px;">Verify Sampling Rates</button>
+			<button id="btnVerifyTapTempo" class="manualTestBtn">Verify Tap Tempo</button><br>
+			<button id="btnUpdateStockCount" class="manualTestBtn" style="margin-right: 100px;">Update Stock Count</button>
+			<button id="btnVerifyAudioPassthrough" class="manualTestBtn" style="margin-right: 100px;">Verify Audio Passthrough</button>
+			<button id="btnVerifyDelayMemory" class="manualTestBtn">Verify Delay Line Memory</button><br><br>
+			<label id="btnAutoTest">Return to Auto Testing</label><br>
+			<label id="btnClearResults">Clear Results</label>
 		</div>
 	</main>
 </body>
-<script
-  src="https://code.jquery.com/jquery-3.6.1.min.js"
-  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
-  crossorigin="anonymous">
-</script>
-<script>
-	//set up canvas for progress indicator
-	var canvas= document.getElementById("canvas");
-	var ctx= canvas.getContext("2d");
-	const centerX = canvas.width / 2;
-	const centerY = canvas.height / 2;
-
-	//draw the outline
-	function drawCircle() {
-		//clear the canvas
-		ctx.clearRect(0,0,canvas.width,canvas.height);
-		
-		var radius = 51;
-		var startAngle = 0;
-		var endAngle = Math.PI * 2;
-	    ctx.beginPath();
-	    ctx.lineCap="square";
-	    ctx.strokeStyle="black";
-	    ctx.arc(centerX, centerY, radius, startAngle, endAngle, true);
-	    ctx.stroke();
-	}
-
-	//wait for a specified time in miliseconds
-	function sleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	//fill the circle to indicate progress status
-	//will be updated to take an argument indicating percent complete
-	//currently hardcoded to update every 50 ms until reaching 100% progress after 5 seconds
-	async function drawProgress() {
-		var radius = 50;
-		var startAngle = 0 - (Math.PI / 2);
-	    ctx.beginPath();
-	    ctx.lineCap="square";
-	    ctx.strokeStyle="black";
-		for (let i=0; i<=100; i++) {
-			//calculate angle based on percent complete (0-100)
-			var endAngle = (Math.PI * 2)*(i/100) - (Math.PI / 2);
-			
-			//draw and fill the arc
-			ctx.moveTo(centerX, centerY);
-			ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
-			ctx.closePath();
-			ctx.fillStyle = 'blue';
-			ctx.fill();
-			
-			//update the label to display % complete
-			$("#progress").text(i + "%");
-			//wait 50 ms
-			await sleep(50);
-		}
-		
-		//hide this div and make the results div visble
-		$(".currentTab").toggleClass("hiddenTab");
-		$(".currentTab").toggleClass("currentTab");
-		$("#resultsPage").toggleClass("hiddenTab");
-		$("#resultsPage").toggleClass("currentTab");
-	}
-	
-	//define click function for Start button
-	$("#btnStart").click(function(){
-		//currently hardcoded to ignore the confirmRetest page, will add this to the screenflow later
-		
-		//hide this div and make the progress div visble
-		$(".currentTab").toggleClass("hiddenTab");
-		$(".currentTab").toggleClass("currentTab");
-		$("#progressPage").toggleClass("hiddenTab");
-		$("#progressPage").toggleClass("currentTab");
-		
-		//draw the outline for the progress indicator
-	    drawCircle();
-		//fill in the progress indicator (currently hardcoded)
-		drawProgress();
-		
-		//make a call to TestCom servlet
-//		$.ajax({
-//			url: "TestCom",
-//			type: "GET",
-//			contentType: "text",
-//			success: function(result) {
-//				//no need to do anything, this is just to test communication between the PC and uC, will be replaced later
-//			},
-//			error: function(xhr) {
-//				alert("Error: HTTP status " + xhr.status);
-//			}
-//		});
-		$.ajax({
-			url: "TestDiagnostics",
-			type: "GET",
-			contentType: "text",
-			success: function(result) {
-				//no need to do anything, this is just to test communication between the PC and uC, will be replaced later
-			},
-			error: function(xhr) {
-				alert("Error: HTTP status " + xhr.status);
-			}
-		});
-    });
-	
-	//define click function for Next button
-	$("#nextBtn").click(function(){
-		//hide this div and make the start div visble
-		$(".currentTab").toggleClass("hiddenTab");
-		$(".currentTab").toggleClass("currentTab");
-		$("#startPage").toggleClass("hiddenTab");
-		$("#startPage").toggleClass("currentTab");
-	});
-</script>
+<script type="text/javascript" src="jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="jquery-ui.min.js"></script>
+<script src="ctg.js"></script>
+<script type="module" src="testPlatform.js"></script>
 </html>

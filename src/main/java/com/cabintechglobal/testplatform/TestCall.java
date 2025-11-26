@@ -14,7 +14,7 @@ public class TestCall {
 		String TEST_TT = "TEST_TT";
 		String POWER_OFF = "POWER_OFF";
 		String POWER_ON = "POWER_ON";
-		String TEST_CV_MIN = "TEST_CV_MIN";
+		String TEST_CV = "TEST_CV";
 		
 		String portDescriptor = "COM20";
         SerialPort serialPort = SerialPort.getCommPort(portDescriptor);
@@ -44,11 +44,12 @@ public class TestCall {
                 System.out.println("Test Complete");
                 System.out.println("------------------------------------------------------------------");
                 
-//                serialPort.getOutputStream().write(TEST_CV_MIN.getBytes());
-//                System.out.println("Reading CV_MIN...");
-//                getMessages(serialPort);
-//                System.out.println("Test Complete");
-//                
+                serialPort.getOutputStream().write(TEST_CV.getBytes());
+                System.out.println("Verifying CV settings");
+                getMessages(serialPort);
+                System.out.println("Test Complete");
+                System.out.println("------------------------------------------------------------------");
+                
                 serialPort.getOutputStream().write(TEST_OPT.getBytes());
                 System.out.println("Verifying option switches...");
                 getMessages(serialPort);
