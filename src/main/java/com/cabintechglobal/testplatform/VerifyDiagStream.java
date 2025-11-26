@@ -43,14 +43,11 @@ public class VerifyDiagStream extends HttpServlet {
             try {
                 serialPort.getOutputStream().write(TEST_DIAG.getBytes());
                 System.out.println("Powering module on...");
-                boolean pass = Util.getMessages(serialPort);
+                String result = Util.getMessages(serialPort);
                 System.out.println("Test Complete");
                 System.out.println("------------------------------------------------------------------");
                 
-                if (!pass) {
-            		Util.sendTextResponse(response, "FAIL: Module power-on unsuccessful");
-            		return;
-                }
+            		Util.sendTextResponse(response, result);
             } catch (Exception e) {
         		Util.sendTextResponse(response, "FAIL: " + e.getMessage());
         		return;

@@ -86,7 +86,7 @@ public class UpdateModule extends HttpServlet implements Constants {
 				}
 
 				// Run the executable, it's STDOUT will be written to the event stream
-				String ver = fwVersion.length()==0 ? "" : "ver="+fwVersion;
+				String ver = fwVersion.length()==0 ? "ver=beta-tt1" : "ver="+fwVersion;
 				StringBuilder stdErr = new StringBuilder();
 				int exitCode = runProcess(new String[] {getSNExe.getAbsolutePath(), "output=json", ver, serverArg}, getSNExe.getParentFile(), writer, stdErr);
 				

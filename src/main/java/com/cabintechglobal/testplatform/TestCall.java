@@ -124,10 +124,10 @@ public class TestCall {
         while (true) {
         	String resp = readLine(serialPort);
         	System.out.println("Response received '"+resp+"'");
-        	if (resp.substring(0,2).equals("OK")) {
+        	if (resp.substring(0,2).equals("PASS")) {
         		break;
         	}
-        	else if (resp.substring(0,5).equals("ERROR")) {
+        	else if (resp.substring(0,5).equals("FAIL")) {
         		badResult = true;
         		break;
         	}

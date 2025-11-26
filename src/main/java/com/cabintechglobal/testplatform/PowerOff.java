@@ -43,17 +43,15 @@ public class PowerOff extends HttpServlet {
             try {
                 serialPort.getOutputStream().write(POWER_OFF.getBytes());
                 System.out.println("Powering module off...");
-                boolean pass = Util.getMessages(serialPort);
+                String result = Util.getMessages(serialPort);
+                System.out.println(result);
                 System.out.println("Test Complete");
                 System.out.println("------------------------------------------------------------------");
                 
-                if (!pass) {
-            		Util.sendTextResponse(response, "FAIL: Module power-off unsuccessful");
-            		return;
-                }
+           		Util.sendTextResponse(response, result);
+           		return;
             } catch (Exception e) {
         		Util.sendTextResponse(response, "FAIL: " + e.getMessage());
-        		return;
             }
 
             // Close the port when done

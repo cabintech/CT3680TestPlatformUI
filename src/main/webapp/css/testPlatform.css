@@ -1,16 +1,19 @@
 /* GLOBAL SETUP for Vertical Centering*/
 html, body {
     height: 100vh;
+    overflow: auto;
     margin: 0; 
     padding: 0;
     /* Centers the entire page content (the main block) */
     display: flex; 
     justify-content: center; 
     align-items: center; 
+    font-size: 120%;
+    font-family: Arial, sans-serif;
 }
 
 body {
-    background-color: grey;
+    background-color: rgb(192, 192, 192);
 }
 
 /* MAIN: Needs no alignment rules; it just holds the centered children */
@@ -23,15 +26,16 @@ h2 {
     /* Auto-adjust width to the text length */
     width: fit-content; 
     /* Center the block horizontally */
-    margin: 0 auto 20px auto; 
+    margin: 0.25em auto 0.75em auto; 
     /* Force text to align center within the H2 block */
     text-align: center;
+    font-size: 120%;
 }
 
 /* ALIGNMENT WRAPPER: Centers the group of button/list */
 #alignmentWrapper {
     /* Increased estimated width for a safer fit */
-    width: 425px; 
+    width: 100%; 
     /* Center the block horizontally */
     margin: 0 auto; 
     /* Align contents left *inside* this centered block */
@@ -41,7 +45,7 @@ h2 {
 /* BUTTON STYLES (Enlarged and Aligned) */
 #btnStart {
 	background-color: green;
-    font-size: 30px; 
+    font-size: 150%; 
     padding: 20px 60px; 
     display: block; /* Use block to occupy the full width of the wrapper */
     margin-bottom: 20px;
@@ -56,19 +60,16 @@ h2 {
 
 #backToStart {
 	background-color: rgb(255,85,85); 
-    font-size: 20px; 
     padding: 10px 30px; 
 }
 
 #proceedWithTesting {
 	background-color: green; 
-    font-size: 20px; 
     padding: 10px 30px; 
 }
 
 #btnCancel {
 	background-color: rgb(255,85,85); 
-    font-size: 20px; 
     padding: 10px 30px; 
     margin-top: 20px;
 }
@@ -76,7 +77,7 @@ h2 {
 #status {
 	background-color: green; 
     /* Increased Font Size for Label */
-    font-size: 28px; 
+    font-size: 120%; 
     /* Increased Size/Padding for the Result Box */
     padding: 15px 30px;
     /* ADDED: Space below the status label */
@@ -92,7 +93,7 @@ button {
 #nextBtn {
 	background-color: blue;
     /* Increased Font Size */
-    font-size: 24px; 
+    font-size: 120%; 
     /* Increased Button Size */
     padding: 15px 40px; 
     /* Ensures the button is centered on the page */
@@ -106,7 +107,7 @@ button {
 }
 
 #progress {
-	font-size: 24px;
+	font-size: 130%;
 }
 
 #progressPage {
@@ -114,13 +115,10 @@ button {
 }
 
 #statusLbl {
-	font-size: 28px;
+	font-size: 130%;
 	margin-right: 25px;
 }
 
-label {
-	font-size: 20px;
-}
 
 #btnManualTest, #btnAutoTest, #btnClearResults, #negTest {
 	color: blue;
@@ -135,7 +133,6 @@ label {
 	border: 1px solid black;
 	border-radius: 5px;
 	color: black;
-    font-size: 20px; 
     padding: 10px 30px; 
     margin-top: 20px;
     width: 300px;
@@ -146,4 +143,47 @@ label {
 .manualTestBtn:hover {
 	/*background-color: rgb(200,200,200);*/
 	border: 2px solid black;
+}
+
+/* Main auto test layout */
+#autoLayout th {
+	font-weight: bold;
+	font-size: 140%;
+	background-color: rgb(20,120,120);
+	color: white;
+}
+
+input[type="checkbox"] {
+	width: 1.3em;
+	height: 1.3em; 
+}
+
+#update-status {
+	width: 25em;
+	height: 1.1em;
+	background-color: rgb(192, 192, 192);
+	border: 1px solid rgb(80,80,80);	
+	padding: 0.1em; 
+	margin-bottom: 0.5em;
+	display: inline-block;
+	font-size: 85%;
+}
+
+#update-progress {
+	border:1px solid blue;
+	width:20em;
+	height:1em;
+	display:inline-block;
+}
+
+#update-bar {
+	background-color: blue;
+	width:0%;
+	height:100%;
+}
+
+#progressIcon {
+	height: 1em;
+	width: 1em;
+	padding-right: 0.5em;
 }

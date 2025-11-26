@@ -33,6 +33,35 @@ import kong.unirest.Unirest;
 @WebServlet(urlPatterns = "/RunTests", asyncSupported = true)
 public class RunTests extends HttpServlet implements Constants {
 	private static final long serialVersionUID = 1L;
+	
+	// List of auto tests
+	private static final String[] sequence = { 
+			"POWER_ON", 
+			//"READ_SN", 
+			"TEST_DIAG", 
+			"TEST_OPT", 
+			"TEST_PGM", 
+			"TEST_CV", 
+			"TEST_SR",
+			"TEST_TT", 
+			"TEST_AUD", 
+			"TEST_MEM", 
+			"POWER_OFF" };
+	
+	// Approx time in seconds expected for each test
+	private static final double[] progress = { 
+			1.6, 	// power on 
+			//1.0, 	// read SN
+			1.4, 	// diagnostics
+			4.7, 	// option pins
+			8.2, 	// program pins
+			14.2, 	// CV inputs
+			7.1, 	// sampling rates
+			3.9, 	// tap tempo
+			1.1, 	// audio channel passthrough
+			1.0, 	// delay memory
+			1.4 };	// power off
+
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -55,10 +84,17 @@ public class RunTests extends HttpServlet implements Constants {
 			throws ServletException, IOException {
 
 		// Get URL parameters
-		String test = request.getParameter("test");
-		String retest = request.getParameter("retest");
+		String test = Util.safeStr(request.getParameter("test")).trim();
+		String retest = Util.safeStr(request.getParameter("retest")).trim();
+		
+		// If a single test is run, execute it and return the result (no async
+		// message stream). Just like a regular servlet.
+		if (!test.equals("SEQUENCE")) {
+			Util.sendTextResponse(response, runSingleTest(test));
+			return;
+		}
 
-		// Configure an async response stream
+		// Configure an async response stream to run a sequence of tests
 		AsyncContext async = request.startAsync();
 		async.setTimeout(60 * 2 * 1000); // Timeout this operation if it does not complete in 2 minutes
 
@@ -68,10 +104,8 @@ public class RunTests extends HttpServlet implements Constants {
 			asyncRunner(async, response, test, retest);
 		});
 
-		// Upon return from this doGet() the server will send an HTTP status 200 even
-		// before
-		// the async thread runs. There is no way to send any other HTTP status code in
-		// this type
+		// Upon return from this doGet() the server will send an HTTP status 200 even before
+		// the async thread runs. There is no way to send any other HTTP status code in this type
 		// of async servlet, so any errors must be reported via the async stream.
 
 	}
@@ -83,6 +117,36 @@ public class RunTests extends HttpServlet implements Constants {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doGet(request, response);
+	}
+	
+	/**
+	 * Run a single test and return the result string that will start with "PASS"
+	 * if test ran successfully.
+	 * 
+	 * @param test
+	 * @return
+	 */
+	private static String runSingleTest(String test) {
+		try {
+			SerialPort serialPort = SerialPort.getCommPort(PORT_DESCRIPTOR);
+			serialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+	
+			if (!serialPort.openPort()) {
+				return "Failed to open serial port " + PORT_DESCRIPTOR;
+			}
+			try {
+				return performTest(serialPort, test);
+			}
+			finally {
+				// Always close the serial port
+				try {serialPort.closePort();} catch (Exception ignore) {}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace(System.err);
+			return "Unexpected exception: "+e.getMessage();
+		}
+
 	}
 
 	/**
@@ -112,9 +176,6 @@ public class RunTests extends HttpServlet implements Constants {
 		try {
 			writer = response.getWriter();
 
-			String[] sequence = { "POWER_ON", "READ_SN", "TEST_DIAG", "TEST_OPT", "TEST_PGM", "TEST_CV", "TEST_SR",
-					"TEST_TT", "TEST_AUD", "TEST_MEM", "POWER_OFF" };
-			double[] progress = { 1.6, 1.0, 1.4, 4.7, 8.2, 14.2, 7.1, 3.9, 1.1, 1.0, 1.4 };
 			double estTotalTime = 0;
 			for (int i = 0; i < progress.length; i++) {
 				estTotalTime += progress[i];
@@ -157,21 +218,23 @@ public class RunTests extends HttpServlet implements Constants {
 							Util.sendEventStreamKVs(writer, "cmd", result);
 							return;
 						}
-						if (currTest.equals("READ_SN")) {
-							// check DB for serial number
-							String parms = "?sn=" + result.substring(4).trim();
-							HttpResponse<String> serverResponse = Unirest.
-									get(CTG_URL+"CT3680GetSNMeta"+parms).
-									asString();
-							
-							// if serial number in DB
-							if (serverResponse.getStatus() == 404) {
-								if (!reTest.equals("true")) {
-									Util.sendEventStreamKVs(writer, "cmd", "FAIL: Module already exists in DB");
-									return;
-								}
-							}
-						}
+
+//OBSOLETE this is now done in the JS client after all tests complete						
+//						if (currTest.equals("READ_SN")) {
+//							// check DB for serial number
+//							String parms = "?sn=" + result.substring(4).trim();
+//							HttpResponse<String> serverResponse = Unirest.
+//									get(CTG_URL+"CT3680GetSNMeta"+parms).
+//									asString();
+//							
+//							// if serial number in DB
+//							if (serverResponse.getStatus() == 404) {
+//								if (!reTest.equals("true")) {
+//									Util.sendEventStreamKVs(writer, "cmd", "FAIL: Module already exists in DB");
+//									return;
+//								}
+//							}
+//						}
 					}
 				} else {
 					// Single test
@@ -222,17 +285,22 @@ public class RunTests extends HttpServlet implements Constants {
 		try {
 			serialPort.getOutputStream().write(test.getBytes());
 			System.out.println("Test: " + test);
-			boolean pass = Util.getMessages(serialPort);
+			String result = Util.getMessages(serialPort);
 			System.out.println("Test Complete");
 			System.out.println("------------------------------------------------------------------");
-
-			if (!pass) {
-				return "FAIL: " + test + " unsuccessful";
+			
+			if (test.equals("READ_SN") && result.startsWith("FAIL")) {
+				// Try alternate method that uses this machine's USB connections
+				System.out.println("Retrying test READ_SN via host USB connection...");
+				result = GetSN.readSNLocal();
+				System.out.println(result);
+				System.out.println("Retest Complete");
+				System.out.println("------------------------------------------------------------------");
 			}
+
+			return result + " (" + test + ")";
 		} catch (Exception e) {
 			return "FAIL: " + e.getMessage();
-
 		}
-		return "OK: Test " + test + " passed.";
 	}
 }

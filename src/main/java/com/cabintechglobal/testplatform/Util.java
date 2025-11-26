@@ -1,8 +1,11 @@
 package com.cabintechglobal.testplatform;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -490,15 +493,19 @@ public class Util implements Constants {
 		}
 	}
 	
-	public static boolean getMessages(SerialPort serialPort) {
+	/**
+	 * Read lines from the serial port and print them to the console until
+	 * we find a line starting with PASS or FAIL. That PASS/FAIL line is
+	 * returned.
+	 * @param serialPort
+	 * @return
+	 */
+	public static String getMessages(SerialPort serialPort) {
         while (true) {
         	String resp = readLine(serialPort);
         	System.out.println("Response received '"+resp+"'");
-        	if (resp.substring(0,2).equals("OK")) {
-        		return true;
-        	}
-        	else if (resp.substring(0,5).equals("ERROR")) {
-        		return false;
+        	if (resp.startsWith("PASS") || resp.startsWith("FAIL")) {
+        		return resp;
         	}
         }
 	}
@@ -652,4 +659,98 @@ public class Util implements Constants {
 		writer.flush(); // Force output stream content to be written to the client. For an event-stream this does not commit the HTTP response.
 		
 	}
+	
+	/**
+	 * A substring implementation emulating Javascript substring method. This
+	 * always returns a result and never throws index-out-of-bounds exceptions.
+	 * If an index is < 0 it is assumed zero, if > string.length-1 it is assumed
+	 * to be string.length-1. If they are equal an empty string is returned, if
+	 * index2>index1 they are swapped.
+	 * @param s
+	 * @param index1
+	 * @param index2
+	 * @return
+	 */
+	public static final String jsSubstring(String s, int index1, int index2) {
+		index1 = Math.min(s.length(), Math.max(0, index1)); // Bound 0 to string len 
+		index2 = Math.min(s.length(), Math.max(0, index2)); // Bound 0 to string len 
+		
+		if (index1==index2) return "";
+		
+		// Guaranteed to return a result (not throw)
+		if (index1>index2) {
+			return s.substring(index2, index1);
+		}
+		return s.substring(index1, index2);
+	}
+	
+	/**
+	 * A substring implementation emulating Javascript substring method. This
+	 * always returns a result and never throws index-out-of-bounds exceptions.
+	 * If an index is < 0 it is assumed zero, if > string.length-1 it is assumed
+	 * to be string.length-1. If they are equal an empty string is returned, if
+	 * index2>index1 they are swapped.
+	 * @param s
+	 * @param index1
+	 * @param index2
+	 * @return
+	 */
+	public static final String jsSubstring(String s, int index1) {
+		return jsSubstring(s, index1, s.length());
+	}
+	/**
+	 * Runs an OS executable and captures its stdout, stderr, and process exit code. This is a
+	 * synchronous method that does not return until the process exits.
+	 * 
+	 * @param cmdTokens List of command-line tokens, the first of which is the executable name, and the remainder are arguments supplied to the executable
+	 * @param workingDir If not null, the process working directory will be set to this location
+	 * @param stdin If not null, this string will be supplied to the process on it's std input stream
+	 * @param stdout This string builder will be appended with the process stdout stream 
+	 * @param stderr This string builder will be appended with the process stderr stream
+	 * @return The process exit code
+	 * @throws IOException
+	 */
+	public static int runProcess(String[] cmdTokens, File workingDir, String stdin,  StringBuilder stdout, StringBuilder stderr) throws IOException {
+		
+        ProcessBuilder pb = new ProcessBuilder(cmdTokens);
+        
+        // Set the working directory for the process if supplied
+        if (workingDir != null) {
+        	pb.directory(workingDir);
+        }
+
+        Process process = pb.start();
+
+        // --- Capture STDOUT ---
+        BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        while ((line = stdoutReader.readLine()) != null) {
+            stdout.append(line).append(System.lineSeparator());
+        }
+        //System.out.println("STDOUT Captured:\n" + stdout.toString());
+
+        // --- Capture STDERR ---
+        BufferedReader stderrReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        while ((line = stderrReader.readLine()) != null) {
+            stderr.append(line).append(System.lineSeparator());
+        }
+        //System.out.println("STDERR Captured:\n" + stderr.toString());
+
+        // --- Provide STDIN --- (optional)
+        if (stdin != null) {
+	        OutputStream stdinStream = process.getOutputStream();
+	        PrintWriter stdinWriter = new PrintWriter(stdinStream);
+	        stdinWriter.println(stdin); // Send input to the executable
+	        stdinWriter.flush(); // Ensure the input is sent
+	        stdinWriter.close(); // Close the input stream to signal end of input
+        }
+
+        // Wait for the process to complete
+        try {
+        	return process.waitFor();
+        }
+        catch (InterruptedException ignore) {
+        	throw new RuntimeException("Process was interrupted."); // Very unlikely
+        }
+	}	
 }
