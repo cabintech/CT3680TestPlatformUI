@@ -1,11 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>CT3680 Test</title>
-    <link rel="stylesheet" type="text/css" href="testPlatform.css"/>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>CT3680 Test Platform</title>
+	<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.css" />
+	<!-- link rel="stylesheet" type="text/css" href="css/cabintech.css" /-->
+	<link rel="stylesheet" type="text/css" href="testPlatform.css"/>
 </head>
+
 <body>
 	<main>
 		<div id="autoTest">
@@ -22,17 +26,21 @@
 								<button id="btnStart">Start<br>Testing Procedure</button><br>
 								<span id="cbList">
 									<span class="checkSpan">
+										<input type="checkbox" id="cbLoadFirmware" name="cbAddToStock" checked="checked" class="cb">
+							        	<label for="cbLoadFirmware">Load module firmware before testing</label>
+							        </span><br>
+									<span class="checkSpan">
 										<input type="checkbox" id="cbAddToStock" name="cbAddToStock" class="cb">
 							        	<label for="cbAddToStock">Add to stock management system if all tests pass</label>
 							        </span><br>
 							        <span class="checkSpan">
 										<input type="checkbox" id="cbInitNewMod" name="cbInitNewMod" class="cb">
-							        	<label for="cbInitNewMod">Initialize new module</label>
+							        	<label for="cbInitNewMod">Register new module if all tests pass</label>
 							        </span><br>
-							        <span class="checkSpan">
+							        <!-- span class="checkSpan">
 										<input type="checkbox" id="cbUpdateResults" name="cbUpdateResults" class="cb">
 							        	<label for="cbUpdateResults">Update test results</label>
-							        </span>
+							        </span-->
 								</span><br><br>
 								<label id=btnManualTest>Click here for manual testing</label><br>
 								<button id="testDB">Test DB</button>
@@ -43,6 +51,12 @@
 					<td style="text-align: center; background-color: rgb(100,100,100)">
 						<div id="progressPage" class="hiddenTab">
 							<h2 id="progressTitle"></h2><br>
+							<!-- Firmware update status -->
+							<span id="update-status"></span><br>
+							<div id="update-progress" style="border:1px solid blue;width:20em;height:0.8em;display:none;">
+								<div id="update-bar" style="background-color: blue;width:0%;height:100%;"></div>
+							</div>
+							<!-- Testing status -->
 							<canvas id="canvas"></canvas><br/>
 							<div id="progress">0%</div>
 							<div id="msg"></div>

@@ -244,7 +244,20 @@ $("#btnStart").click(async function() {
 	//await drawProgress(25,50,8);
 	//await drawProgress(50,75,2);
 	//await drawProgress(75,100,5);
-	updateProgress(false);
+	
+	// If the module firmware needs to be loaded, do that before starting the tests.
+	if ($("#cbLoadFirmware").is(':checked')) {
+		updateModuleFirmware("#update-", async function(success) {
+			// If the firmware load completed OK, start the tests
+			if (success) {
+				updateProgress(false);
+			}
+		})
+	}
+	else {
+		// Run the tests without loading any firmware
+		updateProgress(false);
+	}
 
 	//make a call to TestCom servlet
 	//		$.ajax({
@@ -270,6 +283,102 @@ $("#btnStart").click(async function() {
 	//			}
 	//		});
 });
+
+
+/**
+ * Runs the firmware update on the attached module updating a series of UI controls with
+ * status and messages as it runs. When done the callback function (if supplied) will be
+ * invoked with a single boolean = true if the update was successful.
+ * 
+ * uiPrefix: jQuery selector prefix for UI elements to be updated with progress
+ * callbackWhenDone: function to be invoked with a single boolean value 
+ * fwVersion: Firmware version to be loaded, defaults to latest production version
+ * 
+ * Last 2 args are optional.
+ */
+async function updateModuleFirmware(uiPrefix, callbackWhenDone, fwVersion) {
+	
+	if (!fwVersion) fwVersion = "";
+
+	$(uiPrefix+"status").text("");
+	$(uiPrefix+"bar").css("width", "0%");
+	$(uiPrefix+"progress").show();
+	//$("#start-update-btn").button("option","disabled",true); // Disable manual update until this one is done
+	
+	let updateFinished = false; // Failed or ok, confirmed that the process is done
+	let successful = false;
+	let diagnostics = ""; // Server supplied stdErr of update process
+	//let server = $("#server").val();
+	
+	// We use the SSE (Server Sent Events) JS library here to invoke a servlet on the server and then read
+	// a stream of events from it. (The built-in EventSource is quite limited and it's retry feature cannot
+	// be reliably disabled, which is bad as we never want to invoke the servlet multiple times).
+	//
+	// Upon construction, the SSE makes a GET request to the server. It will then deliver event stream
+	// messages to the event listener. It will also send events to the readystatechange listener, in particular
+	// when the server closes the connection. Note that although this is HTTP protocol, there is no use of HTTP
+	// status codes here because the HTTP status (200) is sent as soon as the stream is opened, it is not possible
+	// to send some other status later in the stream. So we must handle all errors within the context of the
+	// stream data, not the HTTP protocol.
+	//
+	// It would be interesting to reimplement this with WebSockets for (maybe) a simplier approach.
+	
+	let sse = new SSE("UpdateModule", {autoReconnect: false}); // Invoke the servlet with no auto-retry
+	
+	// Setup async listener for messages from the server
+	sse.addEventListener("message", (e) => {
+	  //console.log(e.data);
+	  let status = JSON.parse(e.data);
+		if (status.status == "running") {
+			let pctDone = Math.ceil((status.currStep / status.maxStep) * 100.0);
+			$(uiPrefix+"bar").css("width", pctDone+"%");
+			$(uiPrefix+"status").text(status.msg);
+		}
+		else if (status.status == "failed") {
+			//util.alertBox("Update Failed", status.msg);
+			$(uiPrefix+"bar").css("width", "0%");
+			$(uiPrefix+"progress").hide();
+			$(uiPrefix+"status").text("UPDATE FAILED: "+status.msg);
+			updateFinished = true;
+		}
+		else if (status.status == "diag") {
+			diagnostics = status.msg; // Save diagnostics (stdErr of update process)
+			console.log(diagnostics);
+			//util.alertBox("Diagnostic Message", diagnostics);
+		}
+		else if (status.status == "ok") {
+			$(uiPrefix+"status").text("Update completed with no errors");
+			$(uiPrefix+"bar").css("width", "0%");
+			$(uiPrefix+"progress").hide();
+			updateFinished = true;
+			successful = true;
+		}
+		else {
+			// Unrecognized status, should never happen
+			$(uiPrefix+"status").text(status.status+":"+status.msg);
+		}
+	});
+	
+	// Listen for state changes (and CLOSE in particular). We will get this event when
+	// the server closes the connection (e.g. 'commits' the response), or some error (e.g. network)
+	// causes the connection to be closed.
+	sse.addEventListener("readystatechange", (e) => {
+		//console.log("SEE readystatechanged called");
+		if (e.readyState == 2) {
+			//console.log("SSE CLOSED");
+			//console.log("updateFinished = "+updateFinished);
+			//console.log("sucessful = "+sucessful);
+			if (!updateFinished) {
+				// The connection was closed before a final status 'failed' or 'ok' message was
+				// issued. This should not happen, and we have no information about what the problem was.
+				util.msgBox("Error","The update process failed to complete for unknown reasons.");
+			}
+			if (callbackWhenDone) callbackWhenDone(successful);
+		}
+	});
+
+}
+
 
 $("#testDB").click(function() {
 	$.ajax({

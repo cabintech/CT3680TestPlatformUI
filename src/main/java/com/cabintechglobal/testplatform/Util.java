@@ -542,6 +542,17 @@ public class Util implements Constants {
 	}
 	
 	/**
+	 * Writes a plain text event-stream formatted message to the given writer with no event type
+	 * or event id.
+	 * @param writer
+	 * @param dataMap
+	 * @throws IOException
+	 */
+	public static final void sendEventStreamMsg(PrintWriter writer, String data) throws IOException {
+		sendEventStreamMsg(writer, data, null,  null);
+	}
+	
+	/**
 	 * Writes an event stream message as a JSON map of the supplied key value pairs. The list of
 	 * pairs must have a size that is an even number.
 	 * or event id.
@@ -549,7 +560,7 @@ public class Util implements Constants {
 	 * @param dataMap
 	 * @throws IOException
 	 */
-	public static final void sendEventStreamMsg(PrintWriter writer, Object... keyValuePairs) throws IOException {
+	public static final void sendEventStreamKVs(PrintWriter writer, Object... keyValuePairs) throws IOException {
 		SafeMap m = new SafeMap();
 		for (int i=0; i<keyValuePairs.length; i=i+2) {
 			Object key = keyValuePairs[i];

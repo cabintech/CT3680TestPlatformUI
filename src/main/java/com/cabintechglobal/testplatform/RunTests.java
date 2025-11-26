@@ -121,7 +121,7 @@ public class RunTests extends HttpServlet implements Constants {
 			}
 
 			if (Util.isEmpty(test)) {
-				Util.sendEventStreamMsg(writer, "cmd", "FAIL missing test name parameter");
+				Util.sendEventStreamKVs(writer, "cmd", "FAIL missing test name parameter");
 				return;
 			}
 
@@ -130,7 +130,7 @@ public class RunTests extends HttpServlet implements Constants {
 
 			if (!serialPort.openPort()) {
 				System.out.println("Failed to open serial port " + PORT_DESCRIPTOR);
-				Util.sendEventStreamMsg(writer, "cmd", "FAIL: Could not open serial port " + PORT_DESCRIPTOR);
+				Util.sendEventStreamKVs(writer, "cmd", "FAIL: Could not open serial port " + PORT_DESCRIPTOR);
 				return;
 			}
 
@@ -149,12 +149,12 @@ public class RunTests extends HttpServlet implements Constants {
 						int endingProgress = ((int) Math.floor((currentProgress + progress[i]) / estTotalTime * 100));
 						currentProgress += progress[i];
 
-						Util.sendEventStreamMsg(writer, "cmd", "STARTING", "startProg", startingProgress, "endProg", endingProgress,
+						Util.sendEventStreamKVs(writer, "cmd", "STARTING", "startProg", startingProgress, "endProg", endingProgress,
 								"expectedTime", progress[i], "testName", currTest);
 
 						String result = performTest(serialPort, currTest);
 						if (result.startsWith("FAIL")) {
-							Util.sendEventStreamMsg(writer, "cmd", result);
+							Util.sendEventStreamKVs(writer, "cmd", result);
 							return;
 						}
 						if (currTest.equals("READ_SN")) {
@@ -167,7 +167,7 @@ public class RunTests extends HttpServlet implements Constants {
 							// if serial number in DB
 							if (serverResponse.getStatus() == 404) {
 								if (!reTest.equals("true")) {
-									Util.sendEventStreamMsg(writer, "cmd", "FAIL: Module already exists in DB");
+									Util.sendEventStreamKVs(writer, "cmd", "FAIL: Module already exists in DB");
 									return;
 								}
 							}
@@ -177,7 +177,7 @@ public class RunTests extends HttpServlet implements Constants {
 					// Single test
 					String result = performTest(serialPort, test);
 					if (result.startsWith("FAIL")) {
-						Util.sendEventStreamMsg(writer, "cmd", result);
+						Util.sendEventStreamKVs(writer, "cmd", result);
 						return;
 					}
 
@@ -194,7 +194,7 @@ public class RunTests extends HttpServlet implements Constants {
 			}
 
 			// Any errors will fast-fail and return. If we got here, the test(s) passed.
-			Util.sendEventStreamMsg(writer, "cmd", "PASSED");
+			Util.sendEventStreamKVs(writer, "cmd", "PASSED");
 			return;
 
 		} catch (Exception e) {
@@ -203,7 +203,7 @@ public class RunTests extends HttpServlet implements Constants {
 			// the client, so we attempt to notify the client of this exception if possible.
 			if (writer != null)
 				try {
-					Util.sendEventStreamMsg(writer, "cmd", "FAIL due to exception: " + e.getMessage());
+					Util.sendEventStreamKVs(writer, "cmd", "FAIL due to exception: " + e.getMessage());
 				} catch (Exception ignore) {
 				}
 

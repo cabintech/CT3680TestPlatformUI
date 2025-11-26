@@ -1,0 +1,1308 @@
+/* CSS for page printing */
+#print-area {
+	display:none; /* Hide print area unless printing, see @media print below */
+}
+
+/*v8.32 Modified this CSS trick to hide all except the print area: https://stackoverflow.com/questions/468881/print-div-id-printarea-div-only */
+@media print {
+  body > *:not(#print-area) { /* Hide everything inside the body EXCEPT the print-area */
+    display: none;
+  }
+  #results-div { /*v8.36 Special treatment for this fixed position element */
+  	visibility: hidden;
+  }
+  #print-area { /* Show the print-area */
+    display: block;
+  }
+}
+
+@page  
+{ 
+    /* this affects the margin in the printer settings */ 
+    /*margin: 0.2in 0.4in 0.2in 0.4in;*/  
+    margin: 0;
+} 
+
+/* Empirical dimensions of 1/2 of a printed page. This is not exact because each
+   browser has its own default margins and the user can change them. There is no
+   way to query the print margins. This works with Chrome with its default
+   0.4in margin on all sides.
+*/
+.half-page {  
+	width: 8.5in;
+	height: 5.3in;
+	page-break-after: always;
+}
+
+.full-page {  
+	width: 100%; /*8.5in;*/
+	height: 100%; /*10.6in;*/
+	page-break-after: always;
+}
+
+.print-packing-slip {
+	padding-top: 0.2in;
+	padding-left: 0.25in;
+	padding-right: 0.25in;
+}
+
+/* General table formatting */
+table {
+  border-collapse:collapse;
+  border-spacing: 0px;
+}
+td,th {
+  padding:5px;
+}
+th {
+  text-align:left;
+  padding-top:5px;
+  padding-bottom:4px;
+  background-color:#5C9CCC;
+  color:#ffffff;
+}
+
+
+.basic-table > thead > tr {
+	font-weight: bold;
+	text-align: left;
+	background-color: #DDDDDD;
+}
+.basic-table td {
+	border: 1px solid black;
+}
+
+.compact-table td {
+	padding-top: 1px;
+	padding-right: 5px;
+	padding-bottom: 1px;
+	padding-left: 5px;
+}
+
+.name-value-table > tbody > tr > td:first-child { /* Tables of 2 columns "Name Value" */
+	width:1px;
+	white-space: nowrap;
+}
+
+
+/* Product compatible and related tables need these when embedded in a stock-note div */
+.related-table {
+	background-color: white;
+	color: black;
+}
+
+.related-table a,  .related-table a:VISITED, .related-table a:HOVER, .related-table a:FOCUS  {
+	color: blue !important;
+}
+
+.related-table td {
+	white-space: nowrap;
+}
+
+.related-table > thead > tr {
+	font-weight: normal;
+}
+
+.row-selected:not(.row-disabled), .row-selected:not(.row-disabled):hover { /* Selection hilight, overrides selectable hover */
+	background-color: #EEEE00 !important;
+	color: black !important;
+}
+
+.row-selectable-table > tbody > tr:not(.row-disabled):hover {
+	background-color: #EEEEEE;
+	/*color: white;*/
+	cursor: pointer;
+}
+
+.row-disabled {
+	background-color: #EEEEEE;
+	color: #888888;
+	cursor: default;
+	pointer-events: none;
+}
+
+
+/* Tracking tables */
+#trk-progress {
+	margin-left: auto; 
+	margin-right: auto; 
+	text-align: center;
+	border-collapse: collapse; 
+	border: none; 
+	padding: 0px;	
+	font-weight: bold; 
+}
+#trk-progress td {
+	padding: 0px;
+}
+#trk-events {
+	margin-left: auto; 
+	margin-right: auto; 
+	border-collapse: collapse; 
+	border: none; 
+	padding: 0px;	
+	border: 1px solid #7CBCEC;
+}
+#trk-events th {
+	font-size:140%;
+	background-color:#7CBCEC;
+}
+
+.link-style {
+	color: blue !important;
+	cursor: pointer;
+	text-decoration: none;
+	white-space: nowrap;
+}
+.link-style:before { /* Add link icon before all link style elements */
+	content:url(../images/link.png);
+	padding-right: 3px;
+}
+
+.button-link-style {
+	display:inline-block;
+	background-color: #5C9CCC !important;
+	color:white;
+	cursor: pointer;
+	border: 1px solid #5C9CCC;
+	border-radius: 6px;
+	padding-left:0.35em;
+	padding-right:0.35em;
+	margin-right:0.5em;
+	margin-top: 0.25em;
+}
+
+.link-style-simple {
+	color: blue !important;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+
+*:focus { /* Chrome likes to outline things with focus; disable that */
+    outline: none;
+}
+
+.ui-widget {
+	/*font-family: "Lucida Sans Unicode", "Lucida Grande", Arial, sans-serif !important; /* JQueryUI CSS specifies this incorrectly with bad results on Chrome */
+}
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+	/*font-family: "Lucida Sans Unicode", "Lucida Grande", Arial, sans-serif !important; /* JQueryUI CSS specifies this incorrectly with bad results on Chrome */
+}
+
+.ui-tabs .ui-tabs-panel /* Tab panels */
+{
+	background: white;
+	padding-top: 0px !important;
+	padding-bottom: 0.5em !important;
+	padding-left: 0.75em !important;
+	padding-right: 0.75em !important;
+}
+
+.ui-tabs {
+	border: none !important;
+	border-bottom: 1px solid #4F9BD2  !important;
+}
+#tabs {
+	padding: 0px !important;
+}
+
+#tabs .ui-tabs .ui-tabs-nav a
+{
+   background-color: white;
+}
+
+/* Item sub-table of checkout dialog */
+#itemdiv table, #itemdiv th, #itemdiv td {
+  border:1px solid black;
+}
+
+/* Order summary sub-table */
+#ordersummary table, #ordersummary th, #ordersummary td {
+  border:1px solid black;
+}
+
+#ordersummary {
+	margin-top: 5px;
+}
+
+.item-price {text-align:right;}
+.item-quantity {text-align:right;}
+.item-total {text-align:right;}
+.item-weight {display:none;} /* Hide weight in viewable table */
+.item-name { /* Prevent tall cart table due to long item names */
+	/*max-width: 20%;*//* Set in openCartDialog() JS when cart dlg is opened */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.simpleCart_items table{
+  width: 100%;
+}
+.checkoutbtn 
+{
+  color: #e17009; /* Does not work? */
+}
+
+/* Other misc styles */
+body {
+ 	margin: 0;
+	font-family: Arial, sans-serif;
+}
+.ui-widget {
+	font-family: Calibri, Arial, sans-serif;
+}
+
+h2
+{
+  color: #2E6E9E;
+}
+
+/* Liquid slider styling */
+
+.ls-wrapper .liquid-slider .panel {  
+  width: 100%; /*1030px;*/ /* Use full width of the parent */
+}
+
+.ls-wrapper .ls-nav a { /* Better look for numbered nav tabs */
+  margin-right: 2px;
+  padding: 0px 8px;  
+  outline: 0px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;    
+}
+.ls-wrapper .ls-nav a:not(.current):hover {
+  background: #d8d8d8;
+  border-color:#000000;
+}
+
+/* PrettyPhoto styling, add frame and title border to image inside anchor */
+
+a.prettyPhoto img { 
+    border: 5px solid #FFAA00;
+    border-bottom-width: 20px;
+    border-radius: 5px;
+}
+a.prettyPhoto { /* No underline of title text */
+    text-decoration: none;
+}
+
+/* Tutorial page stylings */
+img.tutorial-logo {
+	display:inline;
+	float:right;
+	vertical-align:middle;
+	padding-right:2px;
+	border-style:none;
+	width:110px;
+	height:32px;
+}
+
+h2.tutorial-header {
+	display:inline;
+}
+
+/* Name-value pairs used in tutorials */
+.namevalue {
+	border: 1px solid #9AB4CD; 
+	border-radius: 5px; 
+	font-style: italic;
+}
+.value {
+	background:#BAD4ED;
+	font-style: normal;
+}
+
+/* Fix bug that shows scroll bar that moves 1 pixel */
+.syntaxhighlighter table {
+  padding-bottom: 1px !important;
+}
+
+.stock-note {
+  background:rgb(255,106,0); 
+  color:white;
+  border:1px solid black; 
+  padding:5px; 
+  margin-top: 2px; 
+  border-radius: 4px; 
+}
+
+.stock-note a, .stock-note a:VISITED, .stock-note a:HOVER, .stock-note a:FOCUS {
+	color:white;
+}
+
+.inset {
+	margin-left: 10px;
+}
+
+.news {
+  font-family: 'Calibri', 'Arial', 'sans-serif';	
+  padding-left:10px;
+  }
+.news-date {
+	color: #2E6E9E;
+	font-weight: bold;
+	font-style: italic;
+}
+.news-date-hi {
+	color: red;
+}
+
+.footer {
+	text-align: center;
+	font-size: 80%;
+}
+
+.news-toggle {
+	cursor: pointer;
+}
+
+/* Product cart blocks */
+.simpleCart_shelfItem {
+	background-color:#DDDDDD;
+	padding:5px;
+	display:inline-block;
+	border-radius: 5px;
+}
+
+/* Fine adjustment for button alignment in product accordian panels */
+.simpleCart_shelfItem .item_add, .simpleCart_shelfItem .checkoutbtn {
+  position: relative;
+  transform: translateY(-3px);	
+  margin-top: 4px;
+}
+
+
+#order-confirmed {
+	font-family: 'Calibri', 'Arial', 'sans-serif';	
+}
+
+.centeredbox {
+	display: table;
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 8px;
+	border-color: #2E6E9E;
+	padding: 5px;
+	overflow: hidden;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#semiCheckOut {
+  cursor: pointer;	
+  font-size: 80%;
+  margin-right: 10px;
+}
+
+.fbshare-button {
+  transform: translateY(-3px);	
+  margin-left:20px;
+  border: none !important;
+}
+
+#shiptimes table, #shiptimes th, #shiptimes td {
+  border:1px solid black;
+}
+
+/* Lightbox styling */
+
+.lightbox-thumb {
+	border: 1px solid blue;
+	border-radius: 5px;
+	padding: 3px;
+	height: 150px;
+}
+
+.lightbox {
+	  font-family: 'Calibri', 'Arial', 'sans-serif';	
+}
+
+.lightbox-able {
+	border: 1px solid gray;
+}
+.lightbox-able:hover {
+	border: 1px solid blue;
+}
+
+.lb-outerContainer {
+	border: 3px solid #E17037;
+}
+
+/* Hack to make lighbox always show the nav arrows, instead of just mouseover http://stackoverflow.com/questions/36768325/how-to-change-lightbox2-arrows-position-of-this-plugin */
+.lb-nav a.lb-prev, .lb-nav a.lb-next {
+  opacity: 1;
+}
+
+/* Add this class to dialogs to hide the title bar */
+.noTitleStuff .ui-dialog-titlebar {
+	display:none
+}
+
+.noTitleStuff.ui-dialog.ui-widget-content  {
+	border:none;   
+	padding:0; 
+}
+
+#search-dialog {
+	padding: 0px;
+	border: 1px solid gray;
+	font-size: 80%;
+}
+
+/* Make sure dialogs are on top of menus and headers */
+/* https://stackoverflow.com/questions/16917430/jquery-ui-1-10-dialog-and-zindex-option */ 
+.ui-dialog { z-index: 1001 !important ;}
+.ui-widget-overlay
+{
+  opacity: .50 !important; /* Make sure to change both of these, as IE only sees the second one */
+  filter: Alpha(Opacity=50) !important;
+
+  background-color: rgb(50, 50, 50) !important; /* This will make it darker */
+}
+
+#ctg-logo { /* Center logo */
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#ctg-logo-small, #ctg-logo-tiny, #semi-logo-small, .text-short {
+	display:none; /* Hide responsive elements until needed (below) */
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#home-fb-div {
+	position:absolute;
+	top:0;
+	left:0;
+}
+
+/* Hide tab header, navigation is by our own controls */
+#tabs .ui-tabs-nav {
+	display: none;
+}
+
+#tabs .ui-tabs.ui-widget-content { /* Hide content border */
+    border: none;
+}
+
+#searchbox-small { /* Small screens only */
+	display:none;
+	padding-bottom: 1px; /* Not sure why this is needed to match the small cart box */
+	padding-left:10px; /* Bigger hit zone */
+	padding-right:10px;
+}
+
+#search-icon {
+	cursor: pointer;
+	height:100%;
+	vertical-align: middle;
+}
+
+#search {
+	border:none;
+	height:100%;
+	vertical-align: middle;
+	width: 7em;
+	
+}
+
+#cart-box {
+	cursor: pointer;
+}
+
+.accord-container {
+	display:inline-block;
+	vertical-align:middle;
+}
+.accord-image, .accord-text {
+	display:table-cell;
+}
+.accord-pedal-image {
+	vertical-align:middle;
+	padding-right:5px;
+}
+
+.fb-item-share {
+	display:inline-block;
+}
+
+.price-wrapper { /* Includes "$" and price value */
+	font-size:110%;
+	font-weight:bold;
+}
+
+.price-wrapper-old {
+	font-size:110%;
+	font-weight:bold;
+	text-decoration: line-through;
+}
+
+.price-wrapper-onsale {
+	font-size:110%;
+	font-weight:bold;
+	color:red;
+}
+
+.item_Quantity { /* When header line wraps, need some separation */
+	margin-bottom: 8px;
+}
+
+.page-note { /* Note at top of product pages (tabs) */
+	display:inline-block;
+	vertical-align: top;
+}
+
+/* Mobile search styling */
+
+.mobile-search-theme {
+	border: 1px solid blue;
+	font-size: 80%;
+}
+.mobile-search-theme .ui-dialog-titlebar {
+	display:none;
+}
+#search-mobile, #search-mobile-go, #search-mobile-close {
+	vertical-align: middle;
+	font-size: 16px; /* Prevents auto-zoom on iPhone keyboard focus */
+}
+#search-mobile-go, #search-mobile-close {
+	margin-left: 6px;
+	cursor: pointer;
+}
+
+/* Search styling */
+#search-titlebar {
+	background-color: gray;
+	width:100%;
+	height:22px;
+}
+
+#search-titlebar-text {
+	margin-left:5px;
+	color:white;
+	font-weight:bold;
+	vertical-align: middle;	
+}
+
+#search-titlebar-close {
+	float:right;
+	padding-top:2px;
+	padding-right:5px;
+	cursor:pointer;
+}
+
+#search-results {
+	padding: 5px;
+}
+
+#search-close {
+	margin-left: 5px;
+}
+
+#zip-update, #city-update {
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+.section-text {
+	display: inline-block;
+	font-weight: bold !important;
+	padding-top: 15px !important;
+}
+
+.acc-item { /* Prevent accordian titles from splitting btw icon and text */
+	white-space: nowrap;
+}
+.accord-container { /* Allow accord text to split */
+	white-space: normal;
+}
+
+#fixed-header {
+	padding-left: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 998; /* On top of everything except nav-menu */
+}
+#header-table {
+	background: linear-gradient(#97BDD8, #4D9AD1);
+	border-radius: 5px;
+}
+
+/* Lower edge of header fades underlaying content for nicer boundry */
+#header-fade {
+	/*border: 1px solid green;*/
+	height: 5px;
+	width: 100%;
+	background-image : linear-gradient(to top, 
+                    rgba(255,255,255, 0), 
+                    rgba(255,255,255, 1) 90%);
+}
+
+#tabs .ui-tabs {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
+/*
+#header-filler {
+	border: 1px solid red;
+}
+#header-table::after {
+	border: 1px solid red;
+  content  : "";
+  position : absolute;
+  z-index  : 998;
+  top   : 0;
+  left     : 0;
+  pointer-events   : none;
+  background-image : linear-gradient(to bottom, 
+                    rgba(255,255,255, 1), 
+                    rgba(255,255,255, 0) 90%);
+  width    : 100%;
+  height   : 4em;
+}
+*/
+
+.header-box { /* Boxes in the fixed header */
+	display:inline-block; 
+	border-radius: 5px; 
+	border: 1px solid black; 
+	background-color:white;
+	padding:2px;
+	margin-right: 5px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	white-space: nowrap; /* Keep box content 1 line even if squeezed */
+	vertical-align: middle;
+}
+
+#header-table {
+	width: 100%;
+	height: 100%;
+}
+
+#header-table td {
+	padding: 0px;
+}
+
+#header-menu {
+	cursor: pointer;
+}
+
+#header-menu-img {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#header-logo-cell {
+	/* Gradient must match fixed-header background, fills in transparent area of logo image */
+	background-image: url("../images/header-logo.png"), linear-gradient(#97BDD8, #4D9AD1);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: white;
+	background-size: 100% 100%;
+	cursor: pointer;
+}
+
+#header-logo-text {
+	display: none; /* For small mobile only */
+}
+
+.header-nav-text {
+	font-weight: bold;
+	color: white;
+	margin-left: 10px;
+	margin-right: 10px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+#nav-menu {
+	display: none; /* Until shown */
+	position: absolute; /* Not in page flow, does scroll with page */
+	z-index: 999; /* Keep on top of everything else except header */
+	background-color: #4D9AD1; /* Match header color */
+	color: white;
+	border-radius:5px;
+}
+
+.nav-menu-item {
+	padding: 10px;
+	cursor: pointer;
+}
+
+.nav-menu-item:hover {
+	background-color: #97BDD8;
+}
+
+#newsdiv {
+	padding: 0.5em;
+}
+
+
+/* Shipping info tables */
+.shiptime-table {
+	display:inline-block;
+	font-size: 90%;
+}
+
+.shiptime-subheader {
+	border:1px solid gray;
+	background-color: #CCCCCC;
+}
+
+.err-msg {
+	color: red;
+	font-weight: bold;
+}
+
+
+.prod-heading {
+	margin-top: 0px;
+}
+
+h2 a:link{
+    text-decoration: none;
+    color: #2E6E9E;
+    
+}
+
+h2 a:visited {
+    text-decoration: none;
+	color: #2E6E9E;
+}
+
+.more-product-info-btn {
+	color:#e17009; 
+	font-weight: bold;
+	border:2px solid #e17009;
+	border-radius:4px;
+	padding:2px 5px 2px 5px;
+	cursor: pointer;
+}
+
+.more-product-info-btn:hover {
+	box-shadow: 0 0 10px rgba(225, 112, 9, .6);
+}
+
+
+tr.product-section-header {
+	border-left:0px;
+	border-right:0px;	
+}
+
+tr.product-section-header > td {
+	font-size:130% !important;
+	font-weight: bold;
+	padding-top: 1.5em;
+	border-left:0px;
+	border-right:0px;
+}
+
+tr.product-section-subheader > td {
+	font-weight: bold;
+	font-style: italic;
+	padding-top: 0.5em;
+	border-left:0px;
+	border-right:0px;
+}
+
+tr.subheader-row {
+	background-color: #5C9CCC;
+	color: white;
+}
+
+/* Product details expansion styling */
+.product-details > td {
+	border-left:0px;
+	border-right:0px;
+	padding-left:5px;
+	padding-top:5px;
+}
+
+.product-details .product-summary-div { /* Wrapper on summary content */
+	position:relative;
+	padding-left:2em;
+}
+
+.product-details .vert-bar { /* Vertical bar */
+	position:absolute;
+	top:0;
+	left:0;
+	height:100%;
+	width:1em;
+	background-color:#3095D6;
+	padding-right:3px;
+	border-radius:5px;
+}
+
+.product-details .vert-bar > span { /* Vertical SKU text */
+	display:inline-block;
+	height:100%;
+	writing-mode:vertical-rl;
+	text-align:center;
+	transform:rotate(180deg);
+	color:white;
+	font-weight:bold;
+}
+
+#prod-table .product-row {
+	cursor: pointer;
+}
+
+#prod-table .product-row:hover {
+	background-color: yellow;
+}
+
+#prod-table {
+  width:auto;
+}
+.product-row {
+  white-space:nowrap;
+}
+#prod-table td:last-child {
+  width:100%;
+}
+
+.state-icon {
+	margin-bottom: -2px;
+}
+
+.prod-new {
+	color:red;
+	font-size:80%;
+}
+
+.tracking {
+	font-size: 80%;
+}
+
+
+/*--------------- Cart styling ----------------------*/
+#cart-lineitems { /* Main cart line item table */
+	border-collapse: collapse;
+	height:1px; /* Trick to get cell divs to fill the cell https://stackoverflow.com/questions/2841484/how-can-a-label-completely-fill-its-parent-td/3074320 */
+	width:98%; /* Last col overflows the table a bit... not sure why */
+}
+#cart-lineitems tr {
+	height:1px; 
+}
+#cart-lineitems td {
+	padding:0; /* Override our global table setting */
+	height:100%;
+	padding-bottom: 10px !important; /* Space between rows */
+}
+#cart-lineitems th {
+	text-align: center;
+	padding-top:5px;
+	padding-bottom:4px;
+	background-color:white;
+	color:#5C9CCC;
+}
+#cart-lineitems tr td > div { /* All div containers in all cells */
+	display:flex; /* Allows vert center alignment */
+	align-items: center;
+	background-color: #E0E0E0;
+	min-height:100%;
+	height:100%;
+	width:100%;
+}
+#cart-lineitems tfoot tr td > div { /* All div containers in all footer cells */
+	background-color: inherit;
+}
+#cart-lineitems tr td > div > span { /* All top level spans in all cells */
+	display:inline-block; /* Only way to get padding to work properly is having an inline-block span inside each cell DIV */ 
+	padding:5px;
+}
+#cart-lineitems tr td:first-child > div { /* div container in left column of cart */
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	padding-left: 5px;
+	padding-right: 15px;
+
+}
+#cart-lineitems tr td:last-child > div { /* div container in right column of cart */
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding-left: 10px;
+	justify-content: right; /* Line up dollar values */
+}
+
+/*#cart-lineitems tr td:not(:first-child):not(:last-child) > div { } /* div in all other columns of cart */
+
+
+/*-- Cart line item formatting --*/
+.cart-lineitem-title {
+	font-size: 110%;
+	font-weight: bold;	
+}
+.cart-lineitem-sku {
+	font-size: 80%;
+	white-space: nowrap;
+	padding-right:15px;	
+
+}
+.cart-lineitem-sku::before {
+	content: "SKU: ";
+}
+.cart-lineitem-pkg {
+	font-size:80%;
+	white-space: nowrap;
+}
+.cart-lineitem-pkg::before {
+	content: "PKG: ";
+}
+.cart-lineitem-each {
+	font-size: 80%;
+	white-space: nowrap;	
+}
+.cart-lineitem-each::before {
+	content: "$";
+}
+.cart-lineitem-each::after {
+	content: " each";
+}
+.cart-lineitem-qty {
+	width:4em;
+}
+.cart-lineitem-total, .cart-total {
+	font-weight: bold;
+}
+.cart-lineitem-total::before, .cart-total::before {
+	content: "$";
+}
+
+#cart-continue {
+	font-size:120%;
+}
+
+.cart-section-content {
+	display: none;
+	padding-bottom: 5px;
+}
+
+.cart-section-header {
+	margin-block-start:0.5em;
+	margin-block-end:5px;
+	border:3px solid #5C9CCC;
+	border-radius: 4px;
+	/*background-color: #5C9CCC;
+	color: white;*/
+	width: 100%;
+	text-align: center;
+}
+
+.cart-section-header-closed {
+	color: #C8C8C8 !important;
+	border-color: #C8C8C8 !important; 
+	/*content: url("/images/...");*/
+}
+.cart-section[data-state="closed"] > .cart-section-content {
+	/*display:none;*/
+}
+.cart-section-instruction {
+	font-size:85%;
+	font-style:italic;
+	margin-bottom:5px;
+	display:inline-block;
+}
+
+.validation-invalid {
+	border-color: red;
+}
+
+.cart-error {
+	color:red;
+	font-weight: bold;
+	width:0px; /* Hack to prevent text from expanding the outer div */
+	min-width:100%;
+}
+
+/*-- Cart shipping estimator --*/
+#est-estimates td, #est-estimates th {
+	white-space: nowrap;
+	border: 1px solid black;
+}
+#est-estimates > tbody > tr:hover { /* Override site selection hover color */
+	background-color: #EEEE00;
+	color: black;
+}
+
+/*-- Cart checkout section --*/
+.addr-input-1 {
+	margin-bottom: 5px;
+}
+
+.addr-input-2 {
+	margin-bottom: 5px;
+	margin-left: 5px;
+}
+
+#shipping-service-table td {
+	border: 1px solid #CCCCCC;
+}
+
+.numbercol {
+	text-align: right;
+}
+
+/*--------- Portal ----------*/
+
+.portal-header {
+	font-weight: bold;
+	font-size: 115%;
+}	
+
+#portal-order-table {
+	display:block; 
+	max-height: 600px; 
+	overflow: auto; 
+	white-space: nowrap;
+}
+
+#portal-order-details {
+	border-collapse:collapse;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	width: 100%;
+}
+
+#portal-order-details .colheader {
+	/*background-color: rgb(34,136,226);*/
+	/*color: white;*/
+	background-color: rgb(177,204,224);
+}
+#portal-order-details td {
+	border: 1px solid black;
+	padding-left: 0.4em;
+	padding-right: 0.4em;
+	vertical-align: top;
+	padding-top: 0;
+	padding-bottom: 0;
+	/*font-size: 13px;*/
+	/*line-height: 18px;*/
+}
+
+
+#portal-order-details .summary-cell {
+	border: none !important;
+	text-align: right;
+}
+#portal-order-details .important-cell {
+	font-weight: bold;
+}
+#portal-order-details .usdnote {
+	font-style: italic;
+	text-align: left;
+}
+#portal-order-details .note {
+	text-align: left;
+}
+
+.portal-ship-div {
+	text-align: center;
+	background-color: #E0E0E0; 
+	border: 1px solid #E0E0E0; 
+	border-radius: 5px; 
+	padding-left:0.2em;
+	padding-right:0.2em;
+	height: 100%;
+}
+
+#portal-show-orderlist {
+	display:none;
+}
+
+.portal-show-order-minus {
+	border-color: #5C9CCC !important;
+	background-color: white !important;
+	color:#5C9CCC !important;
+}
+
+#portal-prompt-email:invalid {
+	border-color: red;
+}
+
+/*---------------------------------------------------*/
+/*-------------- Responsive design ------------------*/
+/*---------------------------------------------------*/
+
+/* Take some steps to prevent wrapping of header */
+@media screen and (max-width: 955px) {
+	.text-short { /* Use short text */
+		display:inline;
+	}
+	.text-long {
+		display:none;
+	}
+	#ctg-logo, #ct-logo-tiny, #semi-logo { /* Swap logos */
+		display:none;
+	}
+	#ctg-logo-small {
+		display:block;
+	}
+	#home-introtext {
+		font-size: 80%;
+	}
+	.home-text-cell br {
+		display:none;
+	}
+	
+}
+
+@media screen and (max-width: 800px) {
+	#header-logo-cell {
+		display: none;
+	}
+	.related-list table td:nth-child(3), .related-list table th:nth-child(3), .related-list table td:nth-child(4), .related-list table th:nth-child(4),
+	.compat-list table td:nth-child(3),  .compat-list table th:nth-child(3),  .compat-list table td:nth-child(4),  .compat-list table th:nth-child(4)
+	{ /* Remove some columns in these tables to limit page width */
+		display:none;
+	}
+	
+}
+
+@media screen and (max-width: 750px) { /* Sync this width in portal JS code */
+	.ui-accordion-header {
+		font-size: 80%;
+	}
+	.fb-item-share-text { /* Remove extra text in prod header lines */
+		display:none;
+	}
+	.fb-item-share {
+		margin-top: 4px;
+	}
+	#semi-logo {
+		display:none;
+	}
+	.home-image-cell {
+		display:none;
+	}
+	.home-text-cell {
+		padding: 0px !important;
+	}
+
+}
+
+@media screen and (max-width: 595px) { 
+	#ctg-logo, #ctg-logo-small, #pedals-fb-text, #semi-fb-text { /* Swap logos */
+		display:none;
+	}
+	#ctg-logo-tiny { /* Logo to left side */
+		display:inline-block;
+	}
+	#home-fb-div { /* Move FB button to right side */
+		right:0;
+		left: inherit;
+	}
+	
+	h2 {
+		font-size: 1em;
+		margin-top: 2px;
+		margin-bottom: 2px;
+	}
+	.page-note {
+		font-size: 80%;
+	}
+	#cart-cc-logos { /* Hide credit card logos */
+		display: none;
+	}
+	/* Remove space around edges to maximize content area */
+	body { 
+		margin: 0;
+	}
+	#tabs { /* OBSOLETE */
+		border: none;
+		border-radius: 0;
+		border-bottom: 1px solid black; /* Separate footer with bottom border only */
+		margin-bottom: 2px;
+	}
+	.ui-tabs .ui-tabs-panel {
+		padding: 2px !important;
+	}
+	.ui-dialog .ui-dialog-content {
+		padding: 2px;
+	}
+	.ui-accordion .ui-accordion-content {
+		padding: 2px !important;
+	}
+	#about-block {
+		font-size: 80%;
+	}
+	#checkout-btn-text { /* Smaller checkout button */
+		display:none;
+	}
+	.checkoutbtn { /* Bigger hit zone */
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	
+	.page-note {
+		display:none;
+	}
+	#semi-order-note {
+		font-size: 80%;
+	}
+	#prod-table td:nth-child(n+3) { /* Hide most columns of the prod table */ 
+		display:none;
+	}
+	#prod-table td:nth-child(2) {
+		width:100%;
+	}
+	.ui-tabs .ui-tabs-panel {
+		padding-left: 0.1em;
+		padding-top: 0.1em;
+	}
+	
+}
+
+@media screen and (max-width: 500px) {
+	#searchbox { /* Make mobile friendly search box */
+		display:none; 
+	}
+	#searchbox-small {
+		display:inline-block;
+	}
+	#cefx-wide {
+		display:none;
+	}
+	#cefx-small {
+		display:inline-block !important;
+	}
+}
+
+@media screen and (max-width: 450px) {
+	.header-nav-text { /* Nav text smaller */
+		font-size: 80%;
+	}
+	#home-fb-text { 
+		display:none; 
+	}
+	#tabs .ui-tabs .ui-tabs-nav .ui-tabs-anchor { /* Reduce inter-tab spacing OBSOLETE */
+		padding-right: 0.25em;
+		padding-left: 0.25em;
+	}
+	.rate-carrier-image {
+		display: none;
+	}
+	.rate-carrier-text {
+		display: inline !important;
+	}
+}
+
+@media screen and (max-width: 390px) {
+	/* Smallest phone screens, e.g. iPhone 4 */
+	#header-about {
+		display:none; /* remove some header links */
+	}
+}
