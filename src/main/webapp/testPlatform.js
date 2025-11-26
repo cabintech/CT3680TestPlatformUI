@@ -228,6 +228,48 @@ $("#btnVerifyDelayMemory").click(function() {
 	});
 });
 
+$("#btnPowerOnFail").click(function() {
+	$.ajax({
+		url: "RunTests?test=POWER_ON_NEG",
+		type: "GET",
+		contentType: "text",
+		success: function(result) {
+			alert(result);
+		},
+		error: function(xhr) {
+			alert("Error: HTTP status " + xhr.status);
+		}
+	});
+});
+
+$("#negTest").click(function() {
+	var testStr;
+	$("#negTest").toggleClass("negTestEnabled")
+	if($("#negTest").hasClass("negTestEnabled")) {
+		testStr = "NEG_TEST_ON";
+		$("#btnPowerOnFail").css("display", "inline-block");
+		$("#negTestIndicator").text("Negative Testing: On");
+		$("#negTest").text("Disable negative testing");
+	}
+	else {
+		testStr = "NEG_TEST_OFF";
+		$("#btnPowerOnFail").css("display", "none");
+		$("#negTestIndicator").text("Negative Testing: Off");
+		$("#negTest").text("Enable negative testing");
+	}
+	$.ajax({
+		url: "RunTests?test=" + testStr,
+		type: "GET",
+		contentType: "text",
+		success: function(result) {
+			alert(result);
+		},
+		error: function(xhr) {
+			alert("Error: HTTP status " + xhr.status);
+		}
+	});
+});
+
 //define click function for Start button
 $("#btnStart").click(async function() {
 	$("#progressTitle").text("Testing in progress, please wait....");

@@ -78,9 +78,11 @@
 
 		</div>
 		<div id="manualTest" class="hiddenTab">
-			<h2>Click on one of the buttons below to run the desired test:</h2>
+			<h2>Click on one of the buttons below to run the desired test:</h2><br>
+			<h3 id="negTestIndicator">Negative Testing: Off</h3>
 			<button id="btnPowerOn" class="manualTestBtn" style="margin-right: 20px; margin-left: 240px; color:black; background-color:green;">Power On</button>
 			<button id="btnPowerOff" class="manualTestBtn" style="background-color: rgb(255,85,85); color:black;">Power Off</button><br><br>
+			<button id="btnPowerOnFail" class="manualTestBtn" style="margin-left: 400px; display: none">Power On (Simulate Fail)</button><br>
 			<button id="btnReadSN" class="manualTestBtn" style="margin-right: 100px;">Read Serial Number</button>
 			<button id="btnVerifyDiagStream" class="manualTestBtn" style="margin-right: 100px;">Verify Diagnostic Stream</button>
 			<button id="btnVerifyCVInputs" class="manualTestBtn">Verify CV Inputs</button><br>
@@ -94,7 +96,8 @@
 			<button id="btnVerifyAudioPassthrough" class="manualTestBtn" style="margin-right: 100px;">Verify Audio Passthrough</button>
 			<button id="btnVerifyDelayMemory" class="manualTestBtn">Verify Delay Line Memory</button><br><br>
 			<label id="btnAutoTest">Return to Auto Testing</label><br>
-			<label id="btnClearResults">Clear Results</label>
+			<label id="btnClearResults">Clear Results</label><br>
+			<label id="negTest">Enable negative testing</label>
 		</div>
 	</main>
 </body>
