@@ -502,7 +502,7 @@ public class Util implements Constants {
 	 */
 	public static String getMessages(SerialPort serialPort) {
         while (true) {
-        	String resp = readLine(serialPort);
+        	String resp = readLine(serialPort, "FAIL: Timout reading from COM port");
         	System.out.println("Response received '"+resp+"'");
         	if (resp.startsWith("PASS") || resp.startsWith("FAIL")) {
         		return resp;
@@ -528,14 +528,19 @@ public class Util implements Constants {
 	 * @return
 	 */
 	private static String readLine(SerialPort serialPort) {
+		return readLine(serialPort, "");
+	}
+	private static String readLine(SerialPort serialPort, String timeoutMsg) {
         byte[] singleBuffer = new byte[1];
         String line = "";
 		while (true) {
 	        int len = serialPort.readBytes(singleBuffer, 1); // Waits indefinitely for a byte to arrive
-	        if (len != 1) {
+	        if (len < 1 ) {
+	        	System.out.println("Failed reading COM port, rc="+len);
+	        	return timeoutMsg;
 	        	//System.out.println("Read zero bytes");
-	        	try {Thread.currentThread().sleep(100);} catch (Exception e) {}
-	        	continue;
+	        	//try {Thread.currentThread().sleep(100);} catch (Exception e) {}
+	        	//continue;
 	        }
 
 	        if (singleBuffer[0] == '\r') { // End of line

@@ -128,8 +128,7 @@ public class RunTests extends HttpServlet implements Constants {
 	 */
 	private static String runSingleTest(String test) {
 		try {
-			SerialPort serialPort = SerialPort.getCommPort(PORT_DESCRIPTOR);
-			serialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+			SerialPort serialPort = openSerialPort();
 	
 			if (!serialPort.openPort()) {
 				return "Failed to open serial port " + PORT_DESCRIPTOR;
@@ -186,8 +185,7 @@ public class RunTests extends HttpServlet implements Constants {
 				return;
 			}
 
-			SerialPort serialPort = SerialPort.getCommPort(PORT_DESCRIPTOR);
-			serialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
+			SerialPort serialPort = openSerialPort();
 
 			if (!serialPort.openPort()) {
 				System.out.println("Failed to open serial port " + PORT_DESCRIPTOR);
@@ -303,4 +301,13 @@ public class RunTests extends HttpServlet implements Constants {
 			return "FAIL: " + e.getMessage();
 		}
 	}
+
+	private static SerialPort openSerialPort() {
+		SerialPort serialPort = SerialPort.getCommPort(PORT_DESCRIPTOR);
+		serialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 30000, 0);
+		return serialPort;
+		
+	}
+
 }
+
