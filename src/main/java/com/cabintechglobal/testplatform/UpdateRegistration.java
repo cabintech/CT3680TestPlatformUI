@@ -22,17 +22,6 @@ import kong.unirest.Unirest;
 public class UpdateRegistration extends HttpServlet implements Constants {
 	private static final long serialVersionUID = 1L;
 	
-	private static String encodedCreds = "";
-	static {	
-        Path filePath = Paths.get("C:\\creds\\ctCreds.txt");
-
-        try {
-            encodedCreds = Files.readString(filePath);
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        }
-	}
-       
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -46,7 +35,7 @@ public class UpdateRegistration extends HttpServlet implements Constants {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		if (encodedCreds.length() == 0) {
+		if (ServerEventListener.encodedCreds.length() == 0) {
 			Util.sendServerErrorResponse(request, response, "Server credentials not available");
 			return;
 		}
@@ -73,16 +62,23 @@ public class UpdateRegistration extends HttpServlet implements Constants {
 		String parms = "?product=CT3680&sn=" + serialNumber + "&version=" + version + "&option=" + option;
 		HttpResponse<String> serverResponse = Unirest.
 				get(CTG_URL+"priv/CT3680Register"+parms).
-				header("Authorization", "Basic "+encodedCreds).
+				header("Authorization", "Basic "+ServerEventListener.encodedCreds).
 				asString();
 		
 		if (serverResponse.getStatus() == 200) {
-			Util.sendTextResponse(response, "");
-			return;
+			// Expect server to return JSON with details 'status' (failed/ok) and 'msg' with message text
+			String json = serverResponse.getBody();
+			SafeMap results = SafeMap.fromJson(json);
+			// Send results to js client
+			if (results.getStr("status").equalsIgnoreCase("ok")) {
+				Util.sendTextResponse(response, "PASS");
+			}
+			else {
+				Util.sendTextResponse(response, "FAIL: "+results.getStr("msg"));
+			}
 		}
 		else {
 			Util.sendServerErrorResponse(request, response, "Cabintech server returned HTTP status" + serverResponse.getStatus());
-			return;
 		}
 	}
 

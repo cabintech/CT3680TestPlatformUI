@@ -129,7 +129,7 @@ button {
 }
 
 .manualTestBtn {
-	background-color: rgb(100,100,100); 
+	background-color: rgb(160,160,160); 
 	border: 1px solid black;
 	border-radius: 5px;
 	color: black;
@@ -138,11 +138,13 @@ button {
     width: 300px;
     height: 75px;
     cursor: pointer;
+    font-size: 80%;
 }
 
 .manualTestBtn:hover {
-	/*background-color: rgb(200,200,200);*/
+	background-color: white;
 	border: 2px solid black;
+
 }
 
 /* Main auto test layout */
@@ -186,4 +188,22 @@ input[type="checkbox"] {
 	height: 1em;
 	width: 1em;
 	padding-right: 0.5em;
+}
+
+.setup-subtitle {
+	font-size: 80%;
+	font-style: italic;
+	border-bottom: 1px solid black;
+	display: inline-block;
+	width: 100%;
+	margin-bottom: 0.2em;
+}
+
+#moduleSN {
+	background-color: rgb(192, 192, 192);
+	border: 1px solid black;
+	padding-left: 0.2em;
+	padding-right: 0.2em;
+	width: 7em;
+	display: inline-block; 
 }

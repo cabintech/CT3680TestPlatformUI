@@ -23,6 +23,10 @@ import jakarta.servlet.annotation.WebListener;
 @WebListener
 public class ServerEventListener implements ServletContextListener, Constants {
 	
+	// This file is expected to have the CTG production web server basic auth
+	// credentials in encoded format.
+	private static final String CRED_FILE = "C:\\creds\\ctCreds.txt";
+	
 	public static File exeDir = null; // Directory containing the (OS specific) executable files
 	// Executable file names
 	public static final String EXE_GETSN = "ct3680-getsn.exe";
@@ -33,6 +37,10 @@ public class ServerEventListener implements ServletContextListener, Constants {
 			CTG_URL+"appfiles/ct3680/"+EXE_GETSN, EXE_GETSN,
 			CTG_URL+"appfiles/ct3680/"+EXE_UPDATER, EXE_UPDATER
 		);
+	
+	// Server credentials (volatile because it may be written by one thread and read
+	// by another without synchronization).
+	public static volatile String encodedCreds = "";
 
     /**
      * Default constructor. 
@@ -85,6 +93,16 @@ public class ServerEventListener implements ServletContextListener, Constants {
 		} catch (Exception e) {
 			throw new RuntimeException("Exception during download of EXE files from CTG server.", e);
 		}
+		
+		// Load server credentials
+		
+        Path filePath = Paths.get(CRED_FILE);
+        try {
+            encodedCreds = Files.readString(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading CTG basic auth credentails file '"+CRED_FILE+"': " + e.getMessage());
+        }
+
     }
 
 	/**

@@ -10,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="css/testPlatform.css"/>
 </head>
 
-<body>
+<body spellcheck="false">
 	<main>
 		<div id="autoTest" style="width:100%;">
 			<table id="autoLayout" style="width:100%;height:100%">
@@ -27,39 +27,41 @@
 						<div id="startPage">
 							<h2>Insert module before starting test</h2><br>
 							<div>
-								<center><button id="btnStart">Start<br>Testing Procedure</button></center><br>
-								<div id="cbList">
+								<center><button id="btnStart">Start<br>Testing Procedure</button></center>
+								<div id="cbList" style="display:inline-block;text-align: left;">
+									<span class="setup-subtitle">Pre-test options</span><br>
+							        <span class="checkSpan">
+										<input type="checkbox" id="cbInitNewMod" name="cbInitNewMod" class="cb">
+							        	<label for="cbInitNewMod">Register new module</label>
+							        </span><br>
 									<span class="checkSpan">
 										<input type="checkbox" id="cbLoadFirmware" name="cbAddToStock" checked="checked" class="cb">
-							        	<label for="cbLoadFirmware">Load module firmware before testing</label>
+							        	<label for="cbLoadFirmware">Load module firmware</label>
+							        </span><br><br>
+									<span class="setup-subtitle">Post-test options (on all-pass)</span><br>
+									<span class="checkSpan">
+										<input type="checkbox" id="cbAddToStock" name="cbAddToStock" class="cb">
+							        	<label for="cbAddToStock">Add to stock management system</label>
 							        </span>
-							        <fieldset style="border:2px solid black;margin-top:0.5em;display:inline-block;text-align: left;"><legend>If all tests pass</legend>
-								        <span class="checkSpan">
-											<input type="checkbox" id="cbInitNewMod" name="cbInitNewMod" class="cb">
-								        	<label for="cbInitNewMod">Register new module</label>
-								        </span><br>
-										<span class="checkSpan">
-											<input type="checkbox" id="cbAddToStock" name="cbAddToStock" class="cb">
-								        	<label for="cbAddToStock">Add to stock management system</label>
-								        </span>
-							        </fieldset>
 							        <!-- span class="checkSpan">
 										<input type="checkbox" id="cbUpdateResults" name="cbUpdateResults" class="cb">
 							        	<label for="cbUpdateResults">Update test results</label>
 							        </span-->
 								</div><br><br>
 								<label id=btnManualTest><img src="images/link.png">&nbsp;Manual testing...</label><br>
+								<!-- 
 								<button id="testDB">Test DB</button>
 								<button id="testReg">Test Registration</button>
+								-->
 							</div>
 						</div>
 					</td>
 					<td style="text-align: center; background-color: rgb(140,140,140);height:100%;">
 						<div id="progressPage" class="hiddenTab" style="height:100%;width:100%;position:relative;">
-							<div style="position:absolute;right:.2em;top:.1em;font-size:60%;">Serial Number: <span id="moduleSN">Unknown</span></div>
+							<div style="position:absolute;right:.4em;top:.4em;font-size:60%;">Serial Number <span id="moduleSN">Unknown</span></div>
 							<img id="progressIcon" src="images/progress-none.gif"><h2 id="progressTitle" style="display:inline-block;padding-top:1.2em;"></h2><br>
 							<!-- Firmware update status -->
-							<div style="text-align: center;">
+							<div id="update-div" style="text-align: center;display:none;">
 								<span id="update-status"></span><br>
 								<div id="update-progress">
 									<div id="update-bar"></div>
@@ -69,8 +71,9 @@
 							<canvas id="canvas"></canvas><br/>
 							<div id="progress">0%</div>
 							<div id="msg"></div>
-							<button id="btnCancel">Cancel</button>
+							<!-- button id="btnCancel">Cancel</button-->
 							<button id="btnConfirmRetest" style="display: none;">Retest this module</button>
+							<button id="show-log" style="position:absolute;bottom:.4em;right:.4em;font-size:60%;">Show Log</button>
 						</div>
 						<div id="waitForStart" style="font-style: italic;">
 							<h3>Waiting to start...</h3>
@@ -89,27 +92,37 @@
 		</div>
 		<div id="manualTest" class="hiddenTab">
 			<h2>Click on one of the buttons below to run the desired test:</h2><br>
-			<h3 id="negTestIndicator">Negative Testing: Off</h3>
-			<button id="btnPowerOn" class="manualTestBtn" style="margin-right: 20px; margin-left: 240px; color:black; background-color:green;">Power On</button>
-			<button id="btnPowerOff" class="manualTestBtn" style="background-color: rgb(255,85,85); color:black;">Power Off</button><br><br>
-			<button id="btnPowerOnFail" class="manualTestBtn" style="margin-left: 400px; display: none">Power On (Simulate Fail)</button><br>
+			<span id="negTestIndicator">Negative Testing: <b>OFF</b></span>&nbsp;&nbsp;&nbsp;<img src="images/link.png">&nbsp;<label id="negTest">ON</label><br><br>
+			<button id="btnPowerOn" class="manualTestBtn" style="margin-right: 20px; margin-left: 240px;">Power On</button>
+			<button id="btnPowerOff" class="manualTestBtn">Power Off</button><br><br>
+			<div id="manual-result-div" style="width:100%; text-align: center;height:1.2em; visibility:hidden;">
+				<img id="manual-result-icon" src="images/progress-running.apng" style="height:1em;width:1em;">&nbsp;<span id="manual-result-msg">Running...</span>
+			</div>
 			<button id="btnReadSN" class="manualTestBtn" style="margin-right: 100px;">Read Serial Number</button>
 			<button id="btnVerifyDiagStream" class="manualTestBtn" style="margin-right: 100px;">Verify Diagnostic Stream</button>
 			<button id="btnVerifyCVInputs" class="manualTestBtn">Verify CV Inputs</button><br>
 			<button id="btnLoadFirmware" class="manualTestBtn" style="margin-right: 100px;">Load Firmware</button>
 			<button id="btnVerifyOpt" class="manualTestBtn" style="margin-right: 100px;">Verify Option Switches</button>
 			<button id="btnVerifyPGM" class="manualTestBtn">Verify Program Selection</button><br>
-			<button id="btnUpdateResultsTbl" class="manualTestBtn" style="margin-right: 100px;">Update Results Table</button>
+			<button id="btnUpdateResultsTbl" class="manualTestBtn" style="margin-right: 100px;">Register Module</button>
 			<button id="btnVerifySamplingRates" class="manualTestBtn" style="margin-right: 100px;">Verify Sampling Rates</button>
 			<button id="btnVerifyTapTempo" class="manualTestBtn">Verify Tap Tempo</button><br>
 			<button id="btnUpdateStockCount" class="manualTestBtn" style="margin-right: 100px;">Update Stock Count</button>
 			<button id="btnVerifyAudioPassthrough" class="manualTestBtn" style="margin-right: 100px;">Verify Audio Passthrough</button>
-			<button id="btnVerifyDelayMemory" class="manualTestBtn">Verify Delay Line Memory</button><br><br>
+			<button id="btnVerifyDelayMemory" class="manualTestBtn">Verify Delay Line Memory</button><br>
+			<button id="btnPowerOnFail" class="manualTestBtn" style="margin-left: 408px; visibility:hidden; ">Power On (Simulate Fail)</button><br>
 			<label id="btnAutoTest">Return to Auto Testing</label><br>
 			<label id="btnClearResults">Clear Results</label><br>
-			<label id="negTest">Enable negative testing</label>
+			
 		</div>
 	</main>
+	
+	<!-- Dialogs -->
+	
+	<div id="log-dlg" style="display:none;">
+		<textarea id="log-dlg-textarea" rows="25" cols="100" style="font-size:60%; font-family: monospace; white-space: nowrap; width:100%;height:75vh;"></textarea>
+	</div>
+	
 </body>
 <script type="text/javascript" src="js/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>

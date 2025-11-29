@@ -6,11 +6,25 @@ var ctx = canvas.getContext("2d");
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
-var TestStatus = { // Status codes for setProgressTitle
+const TestStatus = { // Status codes for setProgressTitle
 	NONE: 'none',
 	RUNNING: 'running',
 	DONE: 'done',
 	FAILED: 'failed'
+}
+
+const TestNameDesc = {
+	POWER_ON	: "Turn ON and verify current draw",
+	READ_SN		: "Reading module serial number",
+	TEST_DIAG	: "Reading diagnostics data stream",
+	TEST_OPT	: "Testing 5 digital OPTION pins",
+	TEST_PGM 	: "Verifing 16 programs",
+	TEST_CV 	: "Testing 6 analog control voltages",
+	TEST_SR		: "Testing 4 sampling rates",
+	TEST_TT 	: "Testing tap-tempo delay interval",
+	TEST_AUD 	: "Testing 4 audio channels",
+	TEST_MEM	: "Testing 32768 delay memory locations",
+	POWER_OFF	: "Power OFF"
 }
 
 //draw the outline
@@ -74,6 +88,23 @@ async function drawProgress(prevProgress, estProgress, estTime) {
 $("#btnManualTest").click(function() {
 	$("#manualTest").toggleClass("hiddenTab");
 	$("#autoTest").toggleClass("hiddenTab");
+	if($("#negTest").hasClass("negTestEnabled")) {
+		$("#negTest").toggleClass("negTestEnabled");
+		$("#btnPowerOnFail").css("visibility", "hidden");
+		$("#negTestIndicator").html("Negative Testing: <b>OFF</b>");
+		$("#negTest").text("ON");
+	}
+	$.ajax({
+		url: "RunTests?test=NEG_TEST_OFF",
+		type: "GET",
+		contentType: "text",
+		success: function(result) {
+			//alert(result);
+		},
+		error: function(xhr) {
+			alert("Error: HTTP status " + xhr.status);
+		}
+	});
 });
 
 $("#btnAutoTest").click(function() {
@@ -82,12 +113,24 @@ $("#btnAutoTest").click(function() {
 });
 
 $("#btnPowerOn").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=POWER_ON",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnPowerOn").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnPowerOn").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -96,12 +139,24 @@ $("#btnPowerOn").click(function() {
 });
 
 $("#btnPowerOff").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=POWER_OFF",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnPowerOff").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnPowerOff").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -110,12 +165,26 @@ $("#btnPowerOff").click(function() {
 });
 
 $("#btnReadSN").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=READ_SN",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text("Serial Number: " + result.substring(6,16));
+				$("#btnReadSN").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnReadSN").css("background-color", "rgb(255,85,85)");
+			}
+
+			//alert(result);
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -124,12 +193,24 @@ $("#btnReadSN").click(function() {
 });
 
 $("#btnVerifyDiagStream").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=TEST_DIAG",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnVerifyDiagStream").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnVerifyDiagStream").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -138,12 +219,24 @@ $("#btnVerifyDiagStream").click(function() {
 });
 
 $("#btnVerifyCVInputs").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=TEST_CV",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnVerifyCVInputs").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnVerifyCVInputs").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -152,12 +245,24 @@ $("#btnVerifyCVInputs").click(function() {
 });
 
 $("#btnVerifyOpt").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=TEST_OPT",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnVerifyOpt").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnVerifyOpt").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -166,12 +271,24 @@ $("#btnVerifyOpt").click(function() {
 });
 
 $("#btnVerifyPGM").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=TEST_PGM",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnVerifyPGM").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnVerifyPGM").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -180,12 +297,24 @@ $("#btnVerifyPGM").click(function() {
 });
 
 $("#btnVerifySamplingRates").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=TEST_SR",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnVerifySamplingRates").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnVerifySamplingRates").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -194,12 +323,24 @@ $("#btnVerifySamplingRates").click(function() {
 });
 
 $("#btnVerifyTapTempo").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=TEST_TT",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnVerifyTapTempo").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnVerifyTapTempo").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -208,12 +349,24 @@ $("#btnVerifyTapTempo").click(function() {
 });
 
 $("#btnVerifyAudioPassthrough").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=TEST_AUD",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnVerifyAudioPassthrough").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnVerifyAudioPassthrough").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -222,12 +375,24 @@ $("#btnVerifyAudioPassthrough").click(function() {
 });
 
 $("#btnVerifyDelayMemory").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=TEST_MEM",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnVerifyDelayMemory").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnVerifyDelayMemory").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -236,12 +401,24 @@ $("#btnVerifyDelayMemory").click(function() {
 });
 
 $("#btnPowerOnFail").click(function() {
+	$("#manual-result-div").css("visibility", "visible");
+	$("#manual-result-icon").css("visibility", "visible");
+	$("#manual-result-msg").text("Running...");
 	$.ajax({
 		url: "RunTests?test=POWER_ON_NEG",
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			if (result.startsWith("PASS")) {
+				$("#manual-result-div").css("visibility", "hidden");
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#btnPowerOnFail").css("background-color", "rgb(0,196,0)");
+			}
+			else {
+				$("#manual-result-icon").css("visibility", "hidden");
+				$("#manual-result-msg").text(result);
+				$("#btnPowerOnFail").css("background-color", "rgb(255,85,85)");
+			}
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -254,22 +431,23 @@ $("#negTest").click(function() {
 	$("#negTest").toggleClass("negTestEnabled")
 	if($("#negTest").hasClass("negTestEnabled")) {
 		testStr = "NEG_TEST_ON";
-		$("#btnPowerOnFail").css("display", "inline-block");
-		$("#negTestIndicator").text("Negative Testing: On");
-		$("#negTest").text("Disable negative testing");
+		//$("#btnPowerOnFail").css("display", "inline-block");
+		$("#btnPowerOnFail").css("visibility", "visible");
+		$("#negTestIndicator").html("Negative Testing: <b>ON</b>");
+		$("#negTest").text("OFF");
 	}
 	else {
 		testStr = "NEG_TEST_OFF";
-		$("#btnPowerOnFail").css("display", "none");
-		$("#negTestIndicator").text("Negative Testing: Off");
-		$("#negTest").text("Enable negative testing");
+		$("#btnPowerOnFail").css("visibility", "hidden");
+		$("#negTestIndicator").html("Negative Testing: <b>OFF</b>");
+		$("#negTest").text("ON");
 	}
 	$.ajax({
 		url: "RunTests?test=" + testStr,
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			alert(result);
+			//alert(result);
 		},
 		error: function(xhr) {
 			alert("Error: HTTP status " + xhr.status);
@@ -293,37 +471,7 @@ $("#btnStart").click(async function() {
 	//await drawProgress(50,75,2);
 	//await drawProgress(75,100,5);
 	
-	// If the module firmware needs to be loaded, do that before starting the tests.
-	if ($("#cbLoadFirmware").is(':checked')) {
-		setProgressTitle("Loading module firmware, please wait...", TestStatus.RUNNING);
-		// First, must power up the module. When that (async) process completes,
-		// then run the test suite.
-		powerOn(function(powerOnResult) {
-			if (powerOnResult.startsWith("PASS")) {
-				
-				// Now run the (async) firmware update, if that runs OK, start the tests
-				updateModuleFirmware("#update-", async function(firmwareResult) {
-					// If the firmware load completed OK, start the tests
-					if (firmwareResult.startsWith("PASS")) {
-						$("#update-status").hide();
-						runAutoTests(false);
-					} else {
-						setProgressTitle("Firmware load failed", TestStatus.FAILED);
-						powerOff(); // Attempt power off, no need to wait for it
-					}
-				})
-			}
-			else {
-				// Power on failed, do not run the tests
-				setProgressTitle(powerOnResult, TestStatus.FAILED);
-			}
-			
-		});
-	}
-	else {
-		// Run the tests without loading any firmware
-		runAutoTests(false);
-	}
+	runAutoTests();
 
 });
 
@@ -341,36 +489,45 @@ async function powerOn(optionalCallback) {
 		type: "GET",
 		contentType: "text",
 		success: function(result) {
-			if (result.startsWith("PASS")) {
-				// Try to get the module SN
-				$("#moduleSN").text("Reading...");
-				$.ajax({
-					url: "RunTests?test=READ_SN",
-					type: "GET",
-					contentType: "text",
-					success: function(result) {
-						// Expected result is "PASS: 0X12345678 ..."
-						let sn = "Unavailable";
-						if (result.startsWith("PASS:")) {
-							sn = result.substring(6,6+10);
-						}
-						$("#moduleSN").text(sn);
-						if (optionalCallback) optionalCallback(result);
-					},
-					error: function(xhr) {
-						console.log("HTTP error getting SN: "+util.getServerErrorText(xhr));
-						$("#moduleSN").text("Unavailable");
-						if (optionalCallback) optionalCallback("FAIL: "+util.getServerErrorText(xhr));
-					}
-				});
-			}
-			else {
-				if (optionalCallback) optionalCallback(result);
-			}
+			// Pass back the test result as-is
+			if (optionalCallback) optionalCallback(result);
 		},
 		error: function(xhr) {
 			// HTTP error
-			if (optionalCallback) optionalCallback("FAILED: Module failed to power on. "+util.getServerErrorTxt(xhr));
+			if (optionalCallback) optionalCallback("FAIL: Module failed to power on. "+util.getServerErrorTxt(xhr));
+		}
+	});
+	
+}
+
+/**
+ * Obtains the module serial number and returns to the callback a string that
+ * is "0X..." or "Some failure message". The UI field #moduleSN is
+ * updated during this process.
+ * 
+ * Note this is an async function that returns before the operation is complete.
+ * 
+ * The callback is optional.
+ */
+async function getModuleSN(callback) {
+	$("#moduleSN").text("Reading...");
+	$.ajax({
+		url: "RunTests?test=READ_SN",
+		type: "GET",
+		contentType: "text",
+		success: function(result) {
+			// Expected result is "PASS: 0X12345678 ..."
+			let sn = "Unavailable";
+			if (result.startsWith("PASS:")) {
+				sn = result.substring(6,6+10);
+			}
+			$("#moduleSN").text(sn);
+			if (callback) callback(result);
+		},
+		error: function(xhr) {
+			log("HTTP error getting SN: "+util.getServerErrorText(xhr));
+			$("#moduleSN").text("Unavailable");
+			if (callback) callback("FAIL: "+util.getServerErrorText(xhr));
 		}
 	});
 	
@@ -454,14 +611,17 @@ async function updateModuleFirmware(uiPrefix, callbackWhenDone, fwVersion) {
 	
 	let sse = new SSE("UpdateModule", {autoReconnect: false}); // Invoke the servlet with no auto-retry
 	
+	log("Starting module firmware update");
+	
 	// Setup async listener for messages from the server
 	sse.addEventListener("message", (e) => {
-	  //console.log(e.data);
+	  //log(e.data);
 	  let status = JSON.parse(e.data);
 		if (status.status == "running") {
 			let pctDone = Math.ceil((status.currStep / status.maxStep) * 100.0);
 			$(uiPrefix+"bar").css("width", pctDone+"%");
 			$(uiPrefix+"status").text(status.msg);
+			log("Module update: "+status.msg);
 
 		}
 		else if (status.status == "failed") {
@@ -470,10 +630,11 @@ async function updateModuleFirmware(uiPrefix, callbackWhenDone, fwVersion) {
 			$(uiPrefix+"progress").hide();
 			$(uiPrefix+"status").text("UPDATE FAILED: "+status.msg);
 			updateFinished = true;
+			log("Module update failed: "+status.msg);
 		}
 		else if (status.status == "diag") {
 			diagnostics = status.msg; // Save diagnostics (stdErr of update process)
-			console.log(diagnostics);
+			log(diagnostics);
 			//util.alertBox("Diagnostic Message", diagnostics);
 		}
 		else if (status.status == "ok") {
@@ -482,6 +643,7 @@ async function updateModuleFirmware(uiPrefix, callbackWhenDone, fwVersion) {
 			$(uiPrefix+"progress").hide();
 			updateFinished = true;
 			successful = true;
+			log("Module update completed successfully");
 	}
 		else {
 			// Unrecognized status, should never happen
@@ -493,11 +655,11 @@ async function updateModuleFirmware(uiPrefix, callbackWhenDone, fwVersion) {
 	// the server closes the connection (e.g. 'commits' the response), or some error (e.g. network)
 	// causes the connection to be closed.
 	sse.addEventListener("readystatechange", (e) => {
-		//console.log("SEE readystatechanged called");
+		//log("SEE readystatechanged called");
 		if (e.readyState == 2) {
-			//console.log("SSE CLOSED");
-			//console.log("updateFinished = "+updateFinished);
-			//console.log("sucessful = "+sucessful);
+			//log("SSE CLOSED");
+			//log("updateFinished = "+updateFinished);
+			//log("sucessful = "+sucessful);
 			if (!updateFinished) {
 				// The connection was closed before a final status 'failed' or 'ok' message was
 				// issued. This should not happen, and we have no information about what the problem was.
@@ -544,7 +706,7 @@ $("#btnConfirmRetest").click(function() {
 	$("#btnCancel").css("display", "inline-block");
 	
 	drawCircle();
-	updateProgress(true);
+	runAutoTests(true);
 });
 
 $("#btnCancel").click(function() {
@@ -561,87 +723,211 @@ $("#btnCancel").click(function() {
 	});
 });
 
-async function runAutoTests(retest) {
-	setProgressTitle(retest ? "Retesting hardware, please wait..." : "Testing hardware, please wait...", TestStatus.RUNNING);
-	updateProgress(retest, function(sucessful) {
-		if (sucessful) {
-			doPostTestOptions(function(result) {
-				if (result.startsWith("PASS")) {
+$("#btnClearResults").click(function() {
+	$(".manualTestBtn").css("background-color", "rgb(160,160,160)");
+});
+
+/**
+ * Starting point of running a test sequence. Returns before the sequence is complete. UI
+ * is kept up to date including final test status (there is no async callback).
+ */
+async function runAutoTests() {
+	clearLog();
+
+	// Prepare initial UI state
+	$("#moduleSN").text("Unknown");
+	$("#update-div").hide();
+
+	log("Auto test started");
+	
+	
+	// Power on is always the first step
+	setProgressTitle("Module powering on, please wait...", TestStatus.RUNNING);
+	powerOn(function(powerResult) {
+		log("Power on result: "+powerResult);
+
+		if (powerResult.startsWith("PASS")) {
+			
+			// Continue with next step
+			runAutoTest2(function(auto2Result) {
+				if (auto2Result.startsWith("PASS")) {
 					setProgressTitle("All testing passed", TestStatus.DONE);
-				}	
+				}
 				else {
-					// Callback contains failing message from post-test operations
-					setProgressTitle(results, TestStatus.FAILED);
+					// If testing did not complete, module was probably left
+					// on the power ON state, try to turn it off.
+					setProgressTitle("Module powering off, please wait...", TestStatus.RUNNING);
+					powerOff(function() {
+						// No matter if power off failed or not, set final message to test failure
+						setProgressTitle(auto2Result, TestStatus.FAILED);
+					});
 				}
 			});
-		} else {
-			setProgressTitle("Hardware tests failed", TestStatus.FAILED);
+		}
+		else {
+			// Power on failed
+			setProgressTitle(powerResult, TestStatus.FAILED);
 		}
 	});
 }
 
-/**
- * Run the options selected when all tests have passed.
- */
-function doPostTestOptions(callbackWhenDone) {
+
+async function runAutoTest2(callback) {
+			
+	// Get the module SN, but don't stop the testing if it fails. Subsequent steps
+	// may (based on options) require it and will fail at that point. The SN can
+	// be retrieved after this step from $("#moduleSN").text(). Validate is starts
+	// with "0X" before using it.
+		
+	setProgressTitle("Getting module serial number, please wait...", TestStatus.RUNNING);
+	getModuleSN(function(snResult) {
+		log("Read module SN result: "+snResult);
+
+		// No matter if this step failed or not, continue
+		runAutoTest3(function(run3Result) {
+			// Return result of the rest of the tests
+			callback(run3Result);
+		});
+	});
+}
+
+async function runAutoTest3(callback) {
 	
-	if ($("#cbInitNewModule").is(':checked')) {
-		setProgressTitle("Registering this module, please wait...", TestStatus.RUNNING);
+	// Do module registration if requested
+	
+	if ($("#cbInitNewMod").is(':checked')) {
+		setProgressTitle("Registering module in CTG database, please wait...", TestStatus.RUNNING);
 		registerModule(function(regResult) {
+			log("Module registration result: "+regResult);
 			if (regResult.startsWith("PASS")) {
-				
-				// If ADD TO STOCK is selected, run that async process and return it's result.
-				if ($("#cbAddToStock").is(':checked')) {
-					setProgressTitle("Adding to stock, please wait...", TestStatus.RUNNING);
-					addModuleToStock(function(addResult) {
-						callbackWhenDone(addResult);
-					});
-				}
-				else {
-					// No add to stock, return status of registration call
-					callbackWhenDone(regResult)
-				}
+				runAutoTest4(function(run4Result) {
+					callback(run4Result);
+				}); 
 			}
 			else {
-				// Reg call failed, no ADD was attempted, just return reg result
-				callbackWhenDone(regResult);
+				// Registration failed, pass fail back to caller's handler
+				callback(regResult);
 			}
 		});
 	}
-	
 	else {
-		// ONLY add-to-stock was selected, no registration 
-		if ($("#cbAddToStock").is(':checked')) {
-			setProgressTitle("Adding to stock, please wait...", TestStatus.RUNNING);
-			addModuleToStock(function(addResult) {
-				callbackWhenDone(addRessult);
-			});
-		}
+		// Skip registration, just continue with the next step
+		log("Registration skipped");
+		runAutoTest4(function(run4Result) {
+			callback(run4Result);
+		}); 
 	}
 }
 
+async function runAutoTest4(callback) {
+	
+	// Load module firmware if requested
+		
+	if ($("#cbLoadFirmware").is(':checked')) {
+		setProgressTitle("Loading module firmware, please wait...", TestStatus.RUNNING);
+		
+		// Now run the (async) firmware update, if that runs OK, continue to next step
+		$("#update-div").show(); // Make update UI visible
+		updateModuleFirmware("#update-", async function(firmwareResult) {
+			log("Firmware load result: "+firmwareResult);
+
+			// If the firmware load completed OK, contine
+			if (firmwareResult.startsWith("PASS")) {
+				$("#update-div").hide();
+				runAutoTest5(function(run5Result) {
+					callback(run5Result);
+				});
+			} else {
+				// Update failed, pass it back to caller's handler
+				// Note we leave the UI visible 
+				callback(firmwareResult);
+			}
+		});
+	}
+	else {
+		// Run next step without loading any firmware
+		log("Firmware load skipped");
+
+		runAutoTest5(function(run5Result) {
+			callback(run5Result);
+		});
+	}
+}
+
+async function runAutoTest5(callback) {
+	
+	setProgressTitle("Testing module hardware, please wait...", TestStatus.RUNNING);
+	runHardwareTests(function(autoResult) {
+		log("Hardware test result: "+autoResult);
+		if (autoResult.startsWith("PASS")) {
+			log("Auto testing completed '"+autoResult+"'");
+			// Hardware tests passed, continue with next stp
+			runAutoTest6(function(run6Result) {
+				callback(run6Result);
+			});
+		}
+		else {
+			// Hardware tests failed, send results back
+			callback(autoResult);
+		}
+	});
+}
+
+async function runAutoTest6(callback) {
+	
+	// Update stock level only if requested
+	
+	if ($("#cbAddToStock").is(':checked')) {
+		setProgressTitle("Adding to stock, please wait...", TestStatus.RUNNING);
+		addModuleToStock(function(addResult) {
+			log("Add to stock result: "+addResult);
+			callback(addResult);
+		});
+	}
+	else {
+		// No more steps to run
+		log("Add to stock skipped");
+		callback("PASS:");
+	}
+}
+
+/**
+ * Calls the local server as a proxy to the production CGG web server's
+ * protected API that registers a new module.
+ */
 async function registerModule(callbackWhenDone) {
+	
+	let sn = $("#moduleSN").text();
+	if (!sn || !sn.startsWith("0X")) {
+		callbackWhenDone("No serail number available, cannot register module");
+		return;
+	}
+	
 	$.ajax({
-		//add sn and option params
-		url: "UpdateRegistration",
+		url: "UpdateRegistration?option=new&sn="+encodeURIComponent(sn),
 		type: "GET",
 		contentType: "text",
-		success: function() {
-			callbackWhenDone("PASS");
+		success: function(regResult) {
+			callbackWhenDone(regResult);
 		},
 		error: function(xhr) {
-			callbackWhenDone("Registration failed, "+util.getServerErrorTxt(xhr));
+			callbackWhenDone("Registration failed, "+util.getServerErrorText(xhr));
 		}
 	});
 	
 }
 
+/**
+ * Call our local server as a proxy to the CTG production system to call the
+ * protected API that modifies a SKU (product) stock count.
+ */
 async function addModuleToStock(callbackWhenDone) {
 	$.ajax({
 		url: "UpdateStock",
 		type: "GET",
 		contentType: "text",
-		success: function(result) {
+		success: function() {
+			// Returns no content, just HTTP 200
 			callbackWhenDone("PASS");
 		},
 		error: function(xhr) {
@@ -650,10 +936,12 @@ async function addModuleToStock(callbackWhenDone) {
 	});
 }
 
-async function updateProgress(retest, callbackWhenDone) {
+async function runHardwareTests(callbackWhenDone) {
 	let updateFinished = false; // Failed or Passed, confirmed that the process is done
 	let successful = false;
 	let lastCmd = "FAIL no status messages received from server";
+	
+	
 
 	// We use the SSE (Server Sent Events) JS library here to invoke a servlet on the server and then read
 	// a stream of events from it. (The built-in EventSource is quite limited and it's retry feature cannot
@@ -666,54 +954,86 @@ async function updateProgress(retest, callbackWhenDone) {
 	// to send some other status later in the stream. So we must handle all errors within the context of the
 	// stream data, not the HTTP protocol.
 
-	let sse = new SSE("RunTests?test=SEQUENCE&retest=" + retest, { autoReconnect: false }); // Invoke the servlet with no auto-retry
+	let sse = new SSE("RunTests?test=SEQUENCE&retest=false", { autoReconnect: false }); // Invoke the servlet with no auto-retry
 
 	// Setup async listener for messages from the server
 	sse.addEventListener("message", (e) => {
-		console.log("Async message from server:" + JSON.stringify(e));
+		log("Async message from server:" + JSON.stringify(e));
 
 		let status = JSON.parse(e.data);
 		//alert(JSON.stringify(status));
-		if (status.cmd) console.log("Cmd = '"+status.cmd+"'");
-			else console.log("No DATA.CMD field in the status event.");
+		if (status.cmd) log("Cmd = '"+status.cmd+"'");
+			else log("No DATA.CMD field in the status event.");
 			
-		updateFinished = status.cmd.startsWith("FAIL") || status.cmd.startsWith("PASSED");
-		successful = status.cmd.startsWith("PASSED");
+		updateFinished = status.cmd.startsWith("FAIL") || status.cmd.startsWith("PASS");
+		successful = status.cmd.startsWith("PASS");
 		lastCmd = status.cmd;
-		$("#msg").text("Running test: " + status.testName);
+		if (!updateFinished) {
+			let msg = TestNameDesc[status.testName];
+			if (msg==null) msg = status.testName; // Just in case we don't know this test
+			$("#msg").text(msg);
 
-		let prevProgress = status.startProg;
-		//alert(prevProgress);
-		let estProgress = status.endProg;
-		let estTime = status.expectedTime;
-		drawProgress(prevProgress, estProgress, estTime);
+			let prevProgress = status.startProg;
+			//alert(prevProgress);
+			let estProgress = status.endProg;
+			let estTime = status.expectedTime;
+			drawProgress(prevProgress, estProgress, estTime);
+		}
 	});
 	
 	// Listen for state changes (and CLOSE in particular). We will get this event when
 	// the server closes the connection (e.g. 'commits' the response), or some error (e.g. network)
 	// causes the connection to be closed.
 	sse.addEventListener("readystatechange", (e) => {
-		console.log("SEE readystatechanged called, state="+e.readyState);
+		log("SEE readystatechanged called, state="+e.readyState);
 		if (e.readyState == 2) {
-			console.log("SSE CLOSED");
-			console.log("updateFinished = " + updateFinished);
-			console.log("sucessful = " + successful);
+			log("SSE CLOSED");
+			log("updateFinished = " + updateFinished);
+			log("sucessful = " + successful);
 			if (!updateFinished) {
 				// The connection was closed before a final status 'failed' or 'ok' message was
 				// issued. This should not happen, and we have no information about what the problem was.
-				setProgressTitle("Testing unexpectedy terminated", TestStatus.FAILED);
-				$("#msg").text("Error: The test process failed to complete for unknown reasons.");
-
+				callbackWhenDone("FAIL: Testing unexpectedy terminated")
 			}
-			else if (!successful) {
-				setProgressTitle("Testing failed", TestStatus.FAILED);
-				$("#msg").text(lastCmd);
-				
-				if(lastCmd === "FAIL: Module already exists in DB") {
-					$("#btnCancel").css("display", "none");
-					$("#btnConfirmRetest").css("display", "inline-block");
-				}
+			if (lastCmd === "FAIL: Module already exists in DB") {
+				$("#btnCancel").css("display", "none");
+				$("#btnConfirmRetest").css("display", "inline-block");
 			}
+			$("#msg").text(""); // Clear old progress messages
+			callbackWhenDone(lastCmd);
 		}
 	});
 }
+
+$("#show-log").click(function() {
+	util.dlgBox2("Log", "#log-dlg", 
+		function() {}, 
+		function() {},
+		{
+			"OK" : function() {
+				$(this).data("action", "ok"); // Note OK button was used
+				$(this).dialog("close");
+			}
+		}
+	 );
+	 
+});
+
+function clearLog() {
+	$("#log-dlg-textarea").val('');
+}
+function log(msg) {
+	$("#log-dlg-textarea").val($("#log-dlg-textarea").val()+'\n'+msg);
+	console.log(msg);
+}
+
+/**
+ * On page load
+ */
+$(function() {
+	$("#log-dlg").dialog({
+		width:'50vw',
+		modal: true,
+		autoOpen: false
+	});	
+});

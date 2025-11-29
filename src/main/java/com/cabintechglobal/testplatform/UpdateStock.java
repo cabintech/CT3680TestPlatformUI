@@ -14,23 +14,13 @@ import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
 /**
- * Servlet implementation class UpdateStock
+ * Increments the CT3680 stock level in the CTG production database by 1. A response with
+ * status 200 means the update was successful, any other HTTP status code indicates failure.
  */
 @WebServlet("/UpdateStock")
 public class UpdateStock extends HttpServlet implements Constants {
 	private static final long serialVersionUID = 1L;
 	
-	private static String encodedCreds = "";
-	static {	
-        Path filePath = Paths.get("C:\\creds\\ctCreds.txt");
-
-        try {
-            encodedCreds = Files.readString(filePath);
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        }
-	}
-       
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -44,17 +34,17 @@ public class UpdateStock extends HttpServlet implements Constants {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		if (encodedCreds.length() == 0) {
+		if (ServerEventListener.encodedCreds.length() == 0) {
 			Util.sendServerErrorResponse(request, response, "Server credentials not available");
 			return;
 		}
 		 
-		String parms = "?sku=OTHER&value=1&type=count";
+		String parms = "?sku=CT3680&value=1&type=count";
 		HttpResponse<String> serverResponse = Unirest.
 				get(CTG_URL+"priv/AddProductStock"+parms).
-				header("Authorization", "Basic "+encodedCreds).
+				header("Authorization", "Basic "+ServerEventListener.encodedCreds).
 				asString();
-		if (serverResponse.getStatus() == 200) {
+		if (serverResponse.getStatus() < 299) {
 			Util.sendTextResponse(response, "");
 			return;
 		}
