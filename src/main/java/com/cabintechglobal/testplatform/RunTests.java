@@ -39,12 +39,12 @@ public class RunTests extends HttpServlet implements Constants {
 			"POWER_ON", 
 			//"READ_SN", 
 			"TEST_DIAG", 
+			"TEST_AUD", 
 			"TEST_OPT", 
 			"TEST_PGM", 
 			"TEST_CV", 
 			"TEST_SR",
 			"TEST_TT", 
-			"TEST_AUD", 
 			"TEST_MEM", 
 			"POWER_OFF" };
 	
@@ -53,12 +53,12 @@ public class RunTests extends HttpServlet implements Constants {
 			1.6, 	// power on 
 			//1.0, 	// read SN
 			1.4, 	// diagnostics
+			1.1, 	// audio channel passthrough
 			4.7, 	// option pins
 			8.2, 	// program pins
 			14.2, 	// CV inputs
 			7.1, 	// sampling rates
 			3.9, 	// tap tempo
-			1.1, 	// audio channel passthrough
 			1.0, 	// delay memory
 			1.4 };	// power off
 
